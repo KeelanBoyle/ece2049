@@ -14,6 +14,4 @@ typedef enum State {
     GAME_OVER
 } State;
 
-extern State g_State;
-
 #endif /* MAIN_H_ */

@@ -1,5 +1,6 @@
 #include <msp430.h> 
 #include <main.h>
+#include <global.h>
 #include <grlib.h>
 
 State g_State = MAIN_MENU;
