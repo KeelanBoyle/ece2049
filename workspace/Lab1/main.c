@@ -8,10 +8,13 @@
 State g_State = GAME_LOOP;
 
 void loop(void) {
+	long int i = 0;
+
     switch(g_State) {
     case MAIN_MENU:
         break;
     case GAME_LOOP:
+    	for(i = 0; i < 40000; i++) {}
     	gameLoop();
         break;
     case GAME_OVER:
@@ -27,6 +30,7 @@ int main(void)
 {
 	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
 	configDisplay();
+	configKeypad();
 	
 	initGameState();
 

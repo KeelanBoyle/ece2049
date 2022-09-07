@@ -9,42 +9,87 @@
 #include "global.h"
 #include "peripherals.h"
 #include "grlib.h"
+#include "graphics.h"
 
 typedef struct Alien Alien;
 
 struct Alien {
-	Alien* next;
 	uint8_t x, y, number;
-	uint8_t* sprite;
+	Graphics_Image* sprite;
+	Alien* next;
+	Alien* prev;
 };
 
-Alien testAlien = {
-		NULL,
-		10,
-		10,
-		1,
-		'1'
-};
+struct AlienMemory {
+	Alien alienBuffer[MAX_ALIENS];
+	uint8_t curr_idx;
+} alienMemory;
 
 struct GameInfo {
-	Alien* aliens;
+	Alien* activeAliens;
 	char key;
 } gameInfo;
 
+/* Simple Cyclical Queue Allocator - things will get funky if you actively use more than MAX_ALIENS at a time */
+Alien* allocateAlien() {
+	alienMemory.curr_idx = (alienMemory.curr_idx + 1) % MAX_ALIENS;
+
+	Alien* newHead = (Alien*)alienMemory.alienBuffer + (alienMemory.curr_idx * sizeof(Alien));
+	newHead->next = 0;
+	newHead->prev = 0;
+	newHead->x = 0;
+	newHead->y = 0;
+	newHead->sprite = &Alien_Sprite;
+	newHead->number = 0;
+
+	return newHead;
+}
+
 void pushAlien(Alien* alien) {
-	alien->next = gameInfo.aliens;
-	gameInfo.aliens = alien;
+	alien->next = gameInfo.activeAliens;
+	alien->next->prev = alien;
+	alien->prev = NULL;
+	gameInfo.activeAliens = alien;
+}
+
+void remAlien(Alien* alien) {
+	if(alien->prev != 0) {
+		alien->prev->next = alien->next;
+	} else {
+		gameInfo.activeAliens = alien->next;
+	}
+
+	if(alien->next != 0) {
+		alien->next->prev = alien->prev;
+	}
 }
 
 void getInputs() {
 	// poll keys
-	gameInfo.key = getKey();
+	char key = getKey();
+	if(key) {
+		gameInfo.key = key;
+	}
 };
 
 void doUpdate() {
-	Alien* iter = gameInfo.aliens;
+	Alien* iter = gameInfo.activeAliens;
+
+	/* Remove alien if button pressed */
+	if(gameInfo.key >= '0' && gameInfo.key <= '9') {
+		while(iter != NULL) {
+			if(iter->number == (gameInfo.key - '0')) {
+				remAlien(iter);
+			}
+			iter = iter->next;
+		}
+	}
+
+	iter = gameInfo.activeAliens;
+
+	/* Update positions */
 	while(iter != NULL) {
-		iter->y = iter->y + 1;
+		iter->x = iter->x + 1;
 		iter = iter->next;
 	}
 };
@@ -52,9 +97,9 @@ void doUpdate() {
 void draw() {
 	Graphics_clearDisplay(&g_sContext);
 
-	Alien* iter = gameInfo.aliens;
+	Alien* iter = gameInfo.activeAliens;
 	while(iter != NULL) {
-		Graphics_drawStringCentered(&g_sContext, iter->sprite, 1, iter->x, iter->y, TRANSPARENT_TEXT);
+		Graphics_drawImage(&g_sContext, iter->sprite, iter->x * 8, iter->y * 8);
 		iter = iter->next;
 	}
 
@@ -68,7 +113,15 @@ void gameLoop() {
 };
 
 void initGameState() {
-	gameInfo.aliens = NULL;
+	gameInfo.activeAliens = NULL;
+	gameInfo.key = 0x00;
 
-	pushAlien(&testAlien);
+	Alien* testAlien = allocateAlien();
+	Alien* testAlien2 = allocateAlien();
+
+	testAlien2->y = 3;
+	testAlien2->number = 3;
+
+	pushAlien(testAlien);
+	pushAlien(testAlien2);
 }

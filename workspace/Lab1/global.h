@@ -7,6 +7,7 @@
 #define GAME_REGION_Y 5
 #define DISPLAY_X 96
 #define DISPLAY_Y 96
+#define MAX_ALIENS 10
 
 #define NULL (void*)0
 
