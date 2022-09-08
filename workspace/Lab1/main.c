@@ -1,9 +1,11 @@
 #include <msp430.h> 
 #include <main.h>
-#include <global.h>
 #include <grlib.h>
-#include <gameloop.h>
-#include "peripherals.h"
+
+#include <src/global.h>
+#include <src/game.h>
+#include <src/peripherals.h>
+#include <src/heap.h>
 
 State g_State = GAME_LOOP;
 
@@ -14,7 +16,6 @@ void loop(void) {
     case MAIN_MENU:
         break;
     case GAME_LOOP:
-    	for(i = 0; i < 40000; i++) {}
     	gameLoop();
         break;
     case GAME_OVER:
@@ -31,6 +32,7 @@ int main(void)
 	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
 	configDisplay();
 	configKeypad();
+	initHeap();
 	
 	initGameState();
 

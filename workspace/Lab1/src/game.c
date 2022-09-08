@@ -1,0 +1,138 @@
+/*
+ * gameloop.c
+ *
+ *  Created on: Sep 7, 2022
+ *      Author: arthur
+ */
+
+#include <inttypes.h>
+#include <msp430f5529.h>
+#include "global.h"
+#include "peripherals.h"
+#include "heap.h"
+#include "game.h"
+#include "grlib.h"
+#include "list.h"
+
+Scene_t* activeScene;
+char lastKey = 0;
+
+#define CLEAR_TMRB (TBCTL |= TBCLR);
+#define FRQ_TO_TMR(x) (0x7fff / x)
+
+void getInputs() {
+	// poll keys
+	char key = getKey();
+	if(key) {
+		lastKey = key;
+	}
+};
+
+void updateActiveScene() {
+	/* Shoot bullet if button pressed*/
+	if(lastKey >= '1' && lastKey <= '5' && activeScene->active_bullets < 5) {
+		Bullet_t* bullet = (Bullet_t*)allocate(sizeof(Bullet_t));
+		bullet->x = UNITS_X;
+		bullet->y = ((lastKey - '1') + 1) * (9600 / 5);
+		addToList(&activeScene->bullets, (ListHandle_t*)bullet);
+		activeScene->active_bullets++;
+
+		lastKey = 0;
+	}
+
+	/* Generate new aliens */
+	activeScene->generator(activeScene);
+	Alien_t* aIter = (Alien_t*)activeScene->aliens.next;
+
+	Bullet_t* bIter = (Bullet_t*)activeScene->bullets.next;
+	while(bIter != NULL) {
+		bIter->x -= 512 / UPDATE_FREQ;
+		bIter = (Bullet_t*)bIter->lh.next;
+	}
+
+	/* Update positions */
+	while(aIter != NULL) {
+		aIter->x = aIter->x + (aIter->speed / UPDATE_FREQ);
+
+		if(aIter->x > UNITS_X) {
+			g_State = GAME_OVER;
+		}
+
+		/* Check for bullet hits */
+		bIter = (Bullet_t*)activeScene->bullets.next;
+		while(bIter != NULL) {
+			if(bIter->y == aIter->y && bIter->x < aIter->x) {
+				removeFromList((ListHandle_t*)bIter);
+				removeFromList((ListHandle_t*)aIter);
+				free((void*)aIter);
+				free((void*)bIter);
+
+				activeScene->active_aliens--;
+				activeScene->active_bullets--;
+
+				activeScene->difficulty += 800;
+
+				break;
+			}
+
+			bIter = (Bullet_t*)bIter->lh.next;
+		}
+
+		aIter = (Alien_t*)aIter->lh.next;
+	}
+
+	activeScene->time++;
+};
+
+void drawActiveScene() {
+	Graphics_clearDisplay(&g_sContext);
+
+	Alien_t* alienIter = (Alien_t*)activeScene->aliens.next;
+	while(alienIter != NULL) {
+		Graphics_drawImage(&g_sContext, alienIter->sprite, (alienIter->x >> 7), (alienIter->y >> 7));
+		alienIter = (Alien_t*)alienIter->lh.next;
+	}
+
+	Bullet_t* bulletIter = (Bullet_t*)activeScene->bullets.next;
+		while(bulletIter != NULL) {
+			Graphics_drawPixel(&g_sContext, (((9600 - bulletIter->y) >> 7) + 6), (bulletIter->x >> 7));
+			bulletIter = (Bullet_t*)bulletIter->lh.next;
+		}
+
+	Graphics_flushBuffer(&g_sContext);
+};
+
+void gameLoop() {
+	volatile uint16_t timer = TBR;
+	if(timer > FRQ_TO_TMR(UPDATE_FREQ)) {
+		CLEAR_TMRB;
+		updateActiveScene();
+		drawActiveScene();
+	} else {
+		getInputs();
+	}
+};
+
+void setActiveScene(Scene_t* scene) {
+	activeScene = scene;
+}
+
+void cfg_timer() {
+	/* 16 bits, Clock source ACLK, Continuous Mode */
+	TBCTL  = CNTL_0 | TBSSEL_1 | MC_2;
+	CLEAR_TMRB;
+}
+
+void initGameState() {
+	cfg_timer();
+
+	Scene_t* scene = allocate(sizeof(Scene_t));
+	scene->active_aliens = 0;
+	scene->active_bullets = 0;
+	scene->aliens.next = NULL;
+	scene->bullets.next = NULL;
+	scene->generator = generateRandomAlien;
+	scene->difficulty = 9600;
+
+	setActiveScene(scene);
+}
