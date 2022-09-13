@@ -1,0 +1,29 @@
+#include "heap.h"
+#include "globals.h"
+
+typedef struct ChunkHeader_t ChunkHeader_t;
+
+typedef struct ChunkHeader_t {
+	uint16_t size;
+	uint8_t allocated;
+	ChunkHeader_t nextFree;
+} ChunkHeader_t;
+
+ChunkHeader_t* head;
+
+#ifndef HEAP_SIZE
+#define HEAP_SIZE 512
+#endif
+
+uint8_t arena[HEAP_SIZE];
+
+void initHeap() {
+	/* Initialize first heap block */
+	ChunkHeader_t* initialBlock = (ChunkHeader_t*)arena;
+
+	initialBlock->size = HEAP_SIZE - sizeof(ChunkHeader_t);
+	initialBlock->nextFree = 0;
+	initialBlock->allocated = 0;
+
+	head = initialBlock;
+}

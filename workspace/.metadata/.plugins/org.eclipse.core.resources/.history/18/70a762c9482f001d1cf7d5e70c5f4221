@@ -1,0 +1,10 @@
+#ifndef SCENE_H
+#define SCENE_H
+
+#include "list.h"
+
+typedef struct Scene {
+	List aliens;
+} Scene;
+
+#endif

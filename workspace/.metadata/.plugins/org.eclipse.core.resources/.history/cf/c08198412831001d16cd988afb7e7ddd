@@ -1,0 +1,37 @@
+#include "msp430.h"
+#include <stdlib.h>
+
+#define  MAX_PTS  300   // Create a compiler defintion defining MAX_PTS to the constant 300
+#define  M        8    // Create a compiler definition defining M to the constant 8
+#define  SHIFT    3   // Create a compiler definition defining SHIFT to the constant 3
+#define  SPAN     2500   // Create a compiler definition defining SPAN to the constant 2500
+#define  OFFSET 499  // Create a compiler definition defining OFFSET to the constant 499
+
+// Arthur Ames, ECE Box#5
+void main(void)
+{     // Give total size (in bytes) of these variables as declared
+
+	TBCTL  = CNTL_0 | TBSSEL_1 | MC_2;
+	(TBCTL |= TBCLR);
+
+	int   in[MAX_PTS];       // Create an array of integers MAX_PTS in size (2 * MAX_PTS bytes)
+	int   out[MAX_PTS];      // Create another array of integers MAX_PTS in size (2 * MAX_PTS bytes)
+	volatile int   i,a;      // Create 2 volatile integers (2 bytes each)
+	long int   sum;          // Create a single long integer (4 bytes)
+	WDTCTL = WDTPW + WDTHOLD;   // Stop watchdog timer
+
+	for (i = 0; i < MAX_PTS; i++)      // Loop MAX_PTS times
+	{
+		in[i] = (rand() % SPAN) - OFFSET;    // Fill in[i] with a random number in range [-OFFSET, SPAN-OFFSET)
+
+		if (i < M)   // If in the first M iterations of the loop
+			out[i] = 0; // set out[i] to 0
+		else       // Otherwise
+		{
+			sum = 0;            // set the sum to 0
+			for (a = 0; a < M; a++)      // Loop M times
+				sum += in[i-a];      // Add the last M numbers of in to sum
+			out[i] = sum >> SHIFT;  // Right shift sum by SHIFT, equiv. to dividing sum by 2^SHIFT
+		}
+	}
+}

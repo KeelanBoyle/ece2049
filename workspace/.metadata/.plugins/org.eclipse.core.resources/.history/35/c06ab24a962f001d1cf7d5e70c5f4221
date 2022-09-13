@@ -1,0 +1,22 @@
+#ifndef SCENE_H
+#define SCENE_H
+
+#include "list.h"
+#include "inttypes.h"
+#include "grlib.h"
+
+typedef struct Scene_t {
+	List_t aliens;
+	uint8_t active_aliens;
+	void (*generator)(Scene_t*, uint16_t, uint16_t;)
+} Scene_t;
+
+typedef struct Alien_t {
+	ListHandle_t lh;
+	uint16_t x, y, speed, number;
+	Graphics_Image* sprite;
+} Alien_t;
+
+void generateRandomAlien(Scene_t* scene, uint16_t minSpeed, uint16_t maxSpeed);
+
+#endif

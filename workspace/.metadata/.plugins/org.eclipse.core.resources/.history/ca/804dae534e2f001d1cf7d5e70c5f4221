@@ -1,0 +1,6 @@
+#include <scene.h>
+#include <stdlib.h>
+
+Scene_t* generateRandomScene(uint16_t minSpeed, uint16_t maxSpeed, uint8_t minNum, uint8_t maxNum) {
+	volatile x = rand();
+}

@@ -1,0 +1,136 @@
+/*
+ * gameloop.c
+ *
+ *  Created on: Sep 7, 2022
+ *      Author: arthur
+ */
+
+#include <inttypes.h>
+#include <msp430f5529.h>
+#include "global.h"
+#include "peripherals.h"
+#include "grlib.h"
+#include "graphics.h"
+#include "heap.h"
+#include "game.h"
+
+#define CLEAR_TMRB (TBCTL |= TBCLR);
+#define MS_TO_TMR(x) ((x/1000) * 0x7fff)
+
+typedef struct Alien Alien;
+
+struct Alien {
+	uint16_t x, y, number, speed;
+	Graphics_Image* sprite;
+	Alien* next;
+	Alien* prev;
+};
+
+struct AlienMemory {
+	Alien alienBuffer[MAX_ALIENS];
+	uint8_t curr_idx;
+} alienMemory;
+
+struct GameInfo {
+	Alien* activeAliens;
+	char key;
+} gameInfo;
+
+void pushAlien(Alien* alien) {
+	alien->next = gameInfo.activeAliens;
+	alien->next->prev = alien;
+	alien->prev = NULL;
+	gameInfo.activeAliens = alien;
+}
+
+void remAlien(Alien* alien) {
+	if(alien->prev != 0) {
+		alien->prev->next = alien->next;
+	} else {
+		gameInfo.activeAliens = alien->next;
+	}
+
+	if(alien->next != 0) {
+		alien->next->prev = alien->prev;
+	}
+}
+
+void getInputs() {
+	// poll keys
+	char key = getKey();
+	if(key) {
+		gameInfo.key = key;
+	}
+};
+
+void doUpdate() {
+	Alien* iter = gameInfo.activeAliens;
+
+	/* Remove alien if button pressed */
+	if(gameInfo.key >= '0' && gameInfo.key <= '9') {
+		while(iter != NULL) {
+			if(iter->number == (gameInfo.key - '0')) {
+				remAlien(iter);
+			}
+			iter = iter->next;
+		}
+	}
+
+	iter = gameInfo.activeAliens;
+
+//	/* Update positions */
+//	while(iter != NULL) {
+//		iter->x = iter->x + (iter->speed / UPDATE_FREQ);
+//		iter = iter->next;
+//	}
+};
+
+void draw() {
+	Graphics_clearDisplay(&g_sContext);
+
+	Alien* iter = gameInfo.activeAliens;
+	while(iter != NULL) {
+		Graphics_drawImage(&g_sContext, iter->sprite, iter->x, iter->y);
+		iter = iter->next;
+	}
+
+	Graphics_flushBuffer(&g_sContext);
+};
+
+void gameLoop() {
+	if(TBR > MS_TO_TMR(1000 / UPDATE_FREQ)) { /* Run Draw / Update loop at 60Hz */
+		CLEAR_TMRB;
+		doUpdate();
+		draw();
+	} else {
+		getInputs();
+	}
+};
+
+void cfg_timer() {
+	/* 16 bits, Clock source ACLK, Continuous Mode */
+	TBCTL  = CNTL_0 | TBSSEL_1 | MC_2;
+	CLEAR_TMRB;
+}
+
+void initGameState() {
+	cfg_timer();
+	initLeds();
+
+	Alien* alien = allocate(sizeof(Alien));
+	alien->sprite = &Alien_Sprite;
+	alien->x = 0;
+	alien->y = 0;
+	alien->number = 0;
+	alien->speed = 9600 / 10;
+
+//	Alien* alien2 = allocate(sizeof(Alien));
+//	alien->sprite = &Alien_Sprite;
+//	alien->x = 0;
+//	alien->y = 1;
+//	alien->number = 0;
+//	alien->speed = 9600 / 10;
+
+	pushAlien(alien);
+	pushAlien(alien2);
+}

@@ -1,0 +1,18 @@
+#include <msp430.h> 
+#include <main.h>
+
+State g_State = MAIN_MENU;
+
+/**
+ * main.c
+ */
+int main(void)
+{
+	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
+	
+	return 0;
+}
+
+void loop(void) {
+
+}

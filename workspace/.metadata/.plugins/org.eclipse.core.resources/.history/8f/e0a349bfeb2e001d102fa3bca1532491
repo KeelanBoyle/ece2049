@@ -1,0 +1,24 @@
+#ifndef GRAPHICS_H
+#define GRAPHICS_H
+
+#include "grlib.h"
+
+static const uint32_t palette[] =
+{
+		0xffffff, 0x000000
+};
+
+const uint8_t Alien_Pixel_Data[] = {
+		00010000, 01000001, 00010000, 01111111, 00011011, 10110111, 11111111, 10111111, 10110100, 00010100, 01101100
+};
+
+const Graphics_Image Alien_Sprite = {
+		IMAGE_FMT_1BPP_UNCOMP,
+		11,
+		8,
+		2,
+		palette,
+		Alien_Pixel_Data
+};
+
+#endif

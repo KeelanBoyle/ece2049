@@ -1,0 +1,10 @@
+#include <scene.h>
+#include <stdlib.h>
+#include <heap.c>
+
+Scene_t* generateRandomScene(uint16_t minSpeed, uint16_t maxSpeed, uint8_t minNum, uint8_t maxNum) {
+	Scene_t scene = allocate()
+
+	int numAliens = (rand() % maxNum) + minNum;
+
+}

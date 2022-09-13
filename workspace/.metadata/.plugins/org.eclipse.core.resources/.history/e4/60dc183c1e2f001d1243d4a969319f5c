@@ -1,0 +1,11 @@
+#include "heap.h"
+
+struct ChunkHeader;
+
+typedef struct ChunkHeader {
+	uint16_t size;
+
+} ChunkHeader_t;
+
+uint8_t arena[];
+

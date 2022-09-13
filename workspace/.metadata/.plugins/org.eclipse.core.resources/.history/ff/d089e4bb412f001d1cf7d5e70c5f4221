@@ -1,0 +1,8 @@
+#ifndef ALIEN_H
+#define ALIEN_H
+
+#include "game.h"
+
+COMPONENT_LIST_OF()
+
+#endif

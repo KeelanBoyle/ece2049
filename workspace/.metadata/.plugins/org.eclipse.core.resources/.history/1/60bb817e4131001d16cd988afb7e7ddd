@@ -1,0 +1,5 @@
+#define P2IN *((uint8_t*)0x201)  	/* Port 2 Input Register */
+#define P3OUT *((uint8_t*)0x222)	/* Port 3 Output Register *.
+
+void setupP2_P3(void) {
+}

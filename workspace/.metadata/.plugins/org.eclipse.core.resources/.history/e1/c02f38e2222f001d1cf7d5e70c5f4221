@@ -1,0 +1,75 @@
+#include "heap.h"
+#include "globals.h"
+
+typedef struct ChunkHeader_t ChunkHeader_t;
+
+typedef struct ChunkHeader_t {
+	uint16_t size;
+	uint8_t allocated;
+	ChunkHeader_t nextBlock, prevBlock;
+} ChunkHeader_t;
+
+ChunkHeader_t* head;
+
+uint8_t arena[HEAP_SIZE];
+
+void initHeap() {
+	/* Initialize first heap block */
+	ChunkHeader_t* initialBlock = (ChunkHeader_t*)arena;
+
+	initialBlock->size = HEAP_SIZE - sizeof(ChunkHeader_t);
+	initialBlock->nextBlock = 0;
+	initialBlock->prevBlock = 0;
+	initialBlock->allocated = 0;
+
+	head = initialBlock;
+}
+
+void* allocate(uint16_t size) {
+	ChunkHeader_t* iter = head;
+
+	/* Find chunk large enough for allocation */
+	while(iter->size < size) {
+		iter = iter->nextBlock;
+
+		/* Could not find a large enough block, return null */
+		if(iter == 0) {
+			return 0;
+		}
+	}
+
+	iter->allocated = 1;
+
+	/* If the allocation leaves room for a new block after, create that block */
+	if((iter->size - sizeof(ChunkHeader_t) - size) > 0) {
+		ChunkHeader_t* newBlock = ((ChunkHeader_t*)iter + sizeof(ChunkHeader_t) + size);
+
+		/* Add new block to the list */
+		if(iter->nextBlock != 0) {
+			newBlock->nextBlock->prevBlock = newBlock;
+		}
+
+		newBlock->nextBlock = iter->nextBlock;
+		iter->nextBlock = newBlock;
+		newBlock->prevBlock = iter;
+
+		/* Setup new block */
+		newBlock->allocated = 0;
+		newBlock->size = iter->size - sizeof(ChunkHeader_t) - size;
+
+		iter->size = size;
+	}
+
+	return iter;
+}
+
+void free(void* addr) {
+	ChunkHeader_t* blk = (ChunkHeader_t*)addr;
+
+	blk->allocated = 0;
+
+	/* Consolidate free blocks */
+	while(blk->prevBlock->allocated == 0) {
+		blk = blk->prevBlock;
+	}
+}

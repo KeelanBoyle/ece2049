@@ -1,0 +1,6 @@
+
+
+
+void setupP2_P3(void) {
+	#define P2IN ((uint8_t*))
+}

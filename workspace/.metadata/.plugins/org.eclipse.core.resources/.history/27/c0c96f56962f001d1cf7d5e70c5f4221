@@ -1,0 +1,17 @@
+#include <scene.h>
+#include <stdlib.h>
+#include <heap.h>
+#include "graphics.h"
+
+void generateRandomScene(Scene_t* scene, uint16_t minSpeed, uint16_t maxSpeed) {
+	Alien_t* alien = (Alien_t*)allocate(sizeof(Alien_t));
+	alien->number = (rand() % 6);
+	alien->x = 0;
+	alien->column
+	alien->speed = (rand() % maxSpeed) + minSpeed;
+	alien->sprite = &Alien_Sprite;
+
+	addToList(&scene->aliens, alien);
+
+	return scene;
+}

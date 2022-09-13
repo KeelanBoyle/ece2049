@@ -1,0 +1,35 @@
+/*
+ * gameloop.h
+ *
+ *  Created on: Sep 7, 2022
+ *      Author: arthur
+ */
+
+#ifndef GAME_H_
+#define GAME_H_
+
+#define UNITS_PER_PIX 100
+
+#define UNITS_X 96 * UNITS_PER_PIX
+#define UNITS_Y 96 * UNITS_PER_PIX
+
+#define COMPONENT_LIST_OF(t, l) list_##t
+
+typedef struct ListHandle_t ListHandle_t;
+
+struct ListHandle_t {
+	ListHandle_t* next;
+	ListHandle_t* prev;
+};
+
+typedef struct GameObject_t {
+	uint16_t x, y;
+	uint16_t x_vel, y_vel;
+	Graphics_Image* sprite;
+	ListHandle_t lh;
+} GameObject_t;
+
+void initGameState();
+void gameLoop();
+
+#endif /* GAMELOOP_H_ */

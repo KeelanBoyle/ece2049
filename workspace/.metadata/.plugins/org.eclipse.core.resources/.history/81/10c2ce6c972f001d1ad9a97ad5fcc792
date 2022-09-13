@@ -1,0 +1,16 @@
+#include <scene.h>
+#include <stdlib.h>
+#include <heap.h>
+#include "graphics.h"
+
+void generateRandomAlien(Scene_t* scene) {
+	Alien_t* alien = (Alien_t*)allocate(sizeof(Alien_t));
+	alien->x = 0;
+	alien->column = (rand() % 5) + 1;
+	alien->speed = (rand() % (difficulty >> 7)) + ((difficulty >> 7) + 128);
+	alien->sprite = &Alien_Sprite;
+
+	addToList(&scene->aliens, alien);
+
+	return scene;
+}

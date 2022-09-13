@@ -1,0 +1,89 @@
+#include "heap.h"
+#include "global.h"
+#include "list.h"
+
+/* Very basic heap implementation - Arthur */
+
+typedef struct ChunkHeader_t ChunkHeader_t;
+
+struct ChunkHeader_t {
+	ListHandle_t lh;
+	uint16_t size;
+	uint8_t allocated;
+};
+
+List_t head;
+
+uint8_t arena[HEAP_SIZE];
+
+void initHeap() {
+	/* Initialize first heap block */
+	ChunkHeader_t* ib = (ChunkHeader_t*)arena;
+
+	ib->size = HEAP_SIZE - sizeof(ChunkHeader_t);
+	ib->lh.next = 0;
+	ib->lh.prev = 0;
+	ib->allocated = 0;
+
+	head.next = ib->lh;
+}
+
+void* allocate(uint16_t size) {
+	ListHandle_t* iter = head.next;
+
+	/* Find chunk large enough for allocation */
+	while((ChunkHeader_t*)iter->allocated == 1 || (ChunkHeader_t*)iter->size < size) {
+		iter = iter->next;
+
+		/* Could not find a large enough block, return null */
+		if(iter == 0) {
+			return 0;
+		}
+	}
+
+	iter->allocated = 1;
+
+	/* If the allocation leaves room for a new block after, create that block */
+	if((iter->size - sizeof(ChunkHeader_t) - size) > 0) {
+		ChunkHeader_t* newBlock = ((uint8_t*)iter + sizeof(ChunkHeader_t) + size);
+
+		/* Add new block to the list */
+		if(iter->nextBlock != 0) {
+			newBlock->nextBlock->prevBlock = newBlock;
+		}
+
+		newBlock->nextBlock = iter->nextBlock;
+		iter->nextBlock = newBlock;
+		newBlock->prevBlock = iter;
+
+		/* Setup new block */
+		newBlock->allocated = 0;
+		newBlock->size = iter->size - sizeof(ChunkHeader_t) - size;
+
+		iter->size = size;
+	}
+
+	return iter + 1;
+}
+
+void free(void* addr) {
+	ChunkHeader_t* blk = (ChunkHeader_t*)addr - 1;
+
+	blk->allocated = 0;
+
+	/* Consolidate free blocks */
+	while(blk->prevBlock != 0 && blk->prevBlock->allocated == 0) {
+		blk = blk->prevBlock; /* Get first free block in row */
+	}
+
+	ChunkHeader_t* iter = blk->nextBlock;
+	while(iter != 0 && iter->allocated == 0) {
+		blk->size += sizeof(ChunkHeader_t) + iter->size;
+		iter = iter->nextBlock;
+	}
+
+	iter->prevBlock = blk;
+	blk->nextBlock = iter;
+
+	return;
+}

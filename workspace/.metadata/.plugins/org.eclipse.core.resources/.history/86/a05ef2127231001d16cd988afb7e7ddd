@@ -1,0 +1,23 @@
+#include <msp430.h>
+
+#define BIT(x) (1 << x)
+#define BIT63 (BIT(6) | BIT(5) | BIT(4) | BIT(3))
+
+void switchConfig() {
+	P2SEL &= ~BIT63; /* Ensure that the appropriate pins are in I/O mode */
+	P2DIR &= ~BIT63; /* Set the appropriate pins to input mode */
+	P2REN &= ~BIT63; /* Ensure resistors are disabled. */
+
+}
+
+char switchIO() {
+	return (P2IN & BIT63) >> 3; /* Poll P2IN bits 6-3, then shift them into range 0x0 - 0xF */
+}
+
+void main(void) {
+	switchConfig();
+
+	while(1) {
+		char switches = switchIO();
+	}
+}

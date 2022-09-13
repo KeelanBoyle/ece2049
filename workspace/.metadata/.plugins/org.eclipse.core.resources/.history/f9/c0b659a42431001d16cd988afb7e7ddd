@@ -1,0 +1,31 @@
+#include "msp430.h"
+#include <stdlib.h>
+#define  MAX_PTS  300   // Create a compiler definition that defines MAX_PTS to the constant 300
+
+// Arthur Ames, ECE Box#5
+void main(void)
+{     // Give total size (in bytes) of these variables as declared
+
+	TBCTL  = CNTL_0 | TBSSEL_1 | MC_2;
+	CLEAR_TMRB;
+
+	int   in[MAX_PTS];      // Create a new integer array of MAX_PTS size (in this case, 300)
+	float out[MAX_PTS];     // Create a new floay array of MAX_PTS size (in this case, 300)
+	volatile int   i, a, SPAN=2500, OFFSET=499, M=8;   // Create 5 new volatile integers called i, a, SPAN, OFFSET, and M. Initialize SPAN, OFFSET, and M to their respective values.
+
+	WDTCTL = WDTPW + WDTHOLD;   // Stop watchdog timer
+	for (i = 0; i < MAX_PTS; i++)      // Loop MAX_PTS times (300)
+	{
+		in[i] = (rand() % SPAN) - OFFSET;    // Set in[i] to a random number between -OFFSET and SPAN-OFFSET-1 Inclusive (range [-499, 2000] in this case)
+
+		if (i < M)  // If the loop is in the first M iterations (8 iterations)
+			out[i] = 0.0; //   Then, set the output at i to 0.0
+		else       // If the loop is after the first M iterations
+		{
+			out[i] = 0.0;    // Initialize the output to 0.0
+			for (a = 0; a < M; a++)       // For M values:
+				out[i] += (float)in[i-a];  // Add the previous M input values to the output value
+			out[i] = out[i]/M;           // Divide the output by M, making out[i] the average of the last M input values.
+		}
+	}
+}

@@ -1,0 +1,14 @@
+#ifndef SCENE_H
+#define SCENE_H
+
+#include "list.h"
+
+typedef struct Scene_t {
+	List_t aliens;
+} Scene_t;
+
+typedef struct Alien_t {
+	ListHandle_t lh;
+};
+
+#endif

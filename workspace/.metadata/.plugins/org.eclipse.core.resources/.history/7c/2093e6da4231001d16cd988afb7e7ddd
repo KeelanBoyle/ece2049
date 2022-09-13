@@ -1,0 +1,11 @@
+#define P2DIR *((uint8_t*)0x205)  	/* Port 2 Direction Register  */
+#define P3DIR *((uint8_t*)0x224)	/* Port 3 Direction Register */
+#define P2REN *((uint8_t*)0x207)	/* Port 2 Resistor Enable */
+#define P3REN *((uint8_t*)0x206)	/* Port 3 Resistor Enable */
+
+#define BIT(x) (1 << x)
+
+void setupP2_P3(void) {
+	P2DIR |= ~(BIT(7) | BIT(6) | BIT(5) | BIT(4)); /* Set bit 7-4 to input mode (0) for port 2 */
+	P3DIR |=  (BIT(7) | BIT(6) | BIT(5) | BIT(4)); /* Set bit 7-4 to output mode (0) for port 2 */
+}

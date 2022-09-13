@@ -1,0 +1,39 @@
+/*
+ * gameloop.h
+ *
+ *  Created on: Sep 7, 2022
+ *      Author: arthur
+ */
+
+#ifndef GAME_H_
+#define GAME_H_
+
+#define UNITS_PER_PIX 100
+
+#define UNITS_X 96 * UNITS_PER_PIX
+#define UNITS_Y 96 * UNITS_PER_PIX
+
+#define MakeGameObject(x, t) GameObject_t x##_go = allocate(sizeof(GameObject_t) + sizeof(##t)); \
+
+
+MakeGameObject(alien1, Alien_t);
+
+typedef struct ListHandle_t ListHandle_t;
+typedef uint8_t Metadata_t;
+
+struct ListHandle_t {
+	ListHandle_t* next;
+	ListHandle_t* prev;
+};
+
+typedef struct GameObject_t {
+	ListHandle_t lh;
+	Metadata_t md;
+} GameObject_t;
+
+void initGameState();
+void addGameObject(GameObject_t*);
+void removeGameObject(GameObject_t*)
+void gameLoop();
+
+#endif /* GAMELOOP_H_ */

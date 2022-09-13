@@ -1,0 +1,6 @@
+#include <list.h>
+
+addToList(List* list, ListHandle_t item) {
+	item->next = list->next;
+	item->prev = 0;
+}

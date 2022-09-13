@@ -1,0 +1,8 @@
+#include <scene.h>
+#include <stdlib.h>
+#include <heap.h>
+#include "graphics.h"
+
+Alien_t* generateRandomAlien(Scene_t* scene, uint16_t minSpeed, uint16_t maxSpeed) {
+
+}

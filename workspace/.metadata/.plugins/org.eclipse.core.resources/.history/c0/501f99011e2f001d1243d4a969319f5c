@@ -1,0 +1,6 @@
+#ifndef HEAP_H
+#define HEAP_H
+
+void* allocate(uint16_t size)
+
+#endif

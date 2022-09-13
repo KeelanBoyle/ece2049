@@ -1,0 +1,99 @@
+/*
+ * gameloop.c
+ *
+ *  Created on: Sep 7, 2022
+ *      Author: arthur
+ */
+
+#include <inttypes.h>
+#include "global.h"
+#include "peripherals.h"
+#include "grlib.h"
+#include "graphics.h"
+
+typedef struct Alien Alien;
+
+struct Alien {
+	uint8_t x, y, number;
+	Graphics_Image* sprite;
+	Alien* next;
+	Alien* prev;
+};
+
+struct AlienMemory {
+	Alien alienBuffer[MAX_ALIENS];
+	uint8_t curr_idx;
+} alienMemory;
+
+struct GameInfo {
+	Alien* aliens;
+} gameInfo;
+
+Alien* allocateAlien() {
+	alienMemory.curr_idx = (alienMemory.curr_idx + 1) % MAX_ALIENS;
+
+	Alien* newHead = (Alien*)alienMemory.curr_idx;
+	newHead->next = 0;
+	newHead->prev = 0;
+	newHead->x = 0;
+	newHead->y = 0;
+	newHead->sprite = &Alien_Sprite;
+	newHead->number = 0;
+
+	return newHead;
+}
+
+void pushAlien(Alien* alien) {
+	alien->next = gameInfo.aliens;
+	alien->next->prev = alien;
+	alien->prev = NULL;
+	gameInfo.aliens = alien;
+}
+
+void remAlien(Alien* alien) {
+	alien->prev->next = alien->next;
+	alien->prev->next->prev = alien->prev;
+}
+
+struct GameInfo {
+	Alien* activeAliens;
+	char key;
+} gameInfo;
+
+void getInputs() {
+	// poll keys
+	gameInfo.key = getKey();
+};
+
+void doUpdate() {
+	Alien* iter = gameInfo.activeAliens;
+	while(iter != NULL) {
+		iter->x = iter->x + 1;
+		iter = iter->next;
+	}
+};
+
+void draw() {
+	Graphics_clearDisplay(&g_sContext);
+
+	Alien* iter = gameInfo.activeAliens;
+	while(iter != NULL) {
+		Graphics_drawImage(&g_sContext, iter->sprite, iter->x * 8, iter->y * 8);
+		iter = iter->next;
+	}
+
+	Graphics_flushBuffer(&g_sContext);
+};
+
+void gameLoop() {
+	getInputs();
+	doUpdate();
+	draw();
+};
+
+void initGameState() {
+	gameInfo.aliens = NULL;
+
+	Alien* testAlien = allocateAlien();
+	pushAlien(testAlien);
+}

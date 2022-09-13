@@ -1,0 +1,5 @@
+#include <Scene.h>
+
+Scene_t generateRandomScene(uint16_t minSpeed, uint16_t maxSpeed, uint8_t minNum, uint8_t maxNum) {
+	rand();
+}

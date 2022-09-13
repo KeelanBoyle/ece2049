@@ -1,0 +1,113 @@
+/*
+ * gameloop.c
+ *
+ *  Created on: Sep 7, 2022
+ *      Author: arthur
+ */
+
+#include <inttypes.h>
+#include "global.h"
+#include "peripherals.h"
+#include "grlib.h"
+#include "graphics.h"
+
+typedef struct Alien Alien;
+
+struct Alien {
+	uint8_t x, y, number;
+	Graphics_Image* sprite;
+	Alien* next;
+	Alien* prev;
+};
+
+struct AlienMemory {
+	Alien alienBuffer[MAX_ALIENS];
+	uint8_t curr_idx;
+} alienMemory;
+
+struct GameInfo {
+	Alien* activeAliens;
+	char key;
+} gameInfo;
+
+/* Simple Cyclical Queue Allocator - things will get funky if you actively use more than MAX_ALIENS at a time */
+Alien* allocateAlien() {
+	alienMemory.curr_idx = (alienMemory.curr_idx + 1) % MAX_ALIENS;
+
+	Alien* newHead = (Alien*)alienMemory.alienBuffer + (alienMemory.curr_idx * sizeof(Alien));
+	newHead->next = 0;
+	newHead->prev = 0;
+	newHead->x = 0;
+	newHead->y = 0;
+	newHead->sprite = &Alien_Sprite;
+	newHead->number = 0;
+
+	return newHead;
+}
+
+void pushAlien(Alien* alien) {
+	alien->next = gameInfo.activeAliens;
+	alien->next->prev = alien;
+	alien->prev = NULL;
+	gameInfo.activeAliens = alien;
+}
+
+void remAlien(Alien* alien) {
+	alien->prev->next = alien->next;
+	alien->prev->next->prev = alien->prev;
+}
+
+void getInputs() {
+	// poll keys
+	gameInfo.key = getKey();
+};
+
+void doUpdate() {
+	Alien* iter = gameInfo.activeAliens;
+
+	/* Remove alien if button pressed */
+	if(gameInfo.key >= '0' && gameInfo.key <= '9') {
+		while(iter != NULL) {
+			if(iter->number == gameInfo.key - '0') {
+				remAlien(iter);
+			}
+			iter = iter->next;
+		}
+	}
+
+	/* Update positions */
+	while(iter != NULL) {
+		iter->x = iter->x + 1;
+		iter = iter->next;
+	}
+};
+
+void draw() {
+	Graphics_clearDisplay(&g_sContext);
+
+	Alien* iter = gameInfo.activeAliens;
+	while(iter != NULL) {
+		Graphics_drawImage(&g_sContext, iter->sprite, iter->x * 8, iter->y * 8);
+		iter = iter->next;
+	}
+
+	Graphics_flushBuffer(&g_sContext);
+};
+
+void gameLoop() {
+	getInputs();
+	doUpdate();
+	draw();
+};
+
+void initGameState() {
+	gameInfo.activeAliens = NULL;
+
+	Alien* testAlien = allocateAlien();
+	Alien* testAlien2 = allocateAlien();
+
+	testAlien2->y = 3;
+
+	pushAlien(testAlien);
+	pushAlien(testAlien2);
+}

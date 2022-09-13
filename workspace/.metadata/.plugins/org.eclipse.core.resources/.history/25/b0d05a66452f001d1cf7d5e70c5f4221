@@ -1,0 +1,11 @@
+#ifndef ALIEN_H
+#define ALIEN_H
+
+#include "game.h"
+
+typedef Alien_t {
+	IS_GAMEOBJECT;
+	int number;
+}
+
+#endif

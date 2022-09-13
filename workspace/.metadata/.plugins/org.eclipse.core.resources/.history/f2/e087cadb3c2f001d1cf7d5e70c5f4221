@@ -1,0 +1,19 @@
+/*
+ * gameloop.h
+ *
+ *  Created on: Sep 7, 2022
+ *      Author: arthur
+ */
+
+#ifndef GAME_H_
+#define GAME_H_
+
+#define UNITS_X 9600
+#define UNITS_Y 9600
+
+#define UNITS_PER_PIX 100
+
+void initGameState();
+void gameLoop();
+
+#endif /* GAMELOOP_H_ */

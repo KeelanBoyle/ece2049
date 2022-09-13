@@ -1,0 +1,18 @@
+#include "heap.h"
+#include "globals.h"
+
+typedef struct ChunkHeader_t ChunkHeader_t;
+
+typedef struct ChunkHeader_t {
+	uint16_t size;
+	ChunkHeader_t next, prev;
+} ChunkHeader_t;
+
+ChunkHeader_t* head;
+ChunkHeader_t* free;
+
+uint8_t arena[HEAP_SIZE];
+
+void initHeap() {
+
+}

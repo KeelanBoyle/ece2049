@@ -1,0 +1,11 @@
+#include <list.h>
+
+void addToList(List* list, ListHandle_t* item) {
+	item->next = list->head;
+	item->prev = 0;
+	list->head = item;
+}
+
+void removeFromList(ListHandle_t* item) {
+
+}

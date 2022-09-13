@@ -1,0 +1,8 @@
+#define P2DIR *((uint8_t*)0x205)  	/* Port 2 Input Register  */
+#define P3DIR *((uint8_t*)0x224)	/* Port 3 Output Register */
+#define P2REN *((uint8_t*)0x207)	/* Port 2 Resistor Enable */
+#define P3REN *((uint8_t*)0x206)	/* Port 3 Resistor Enable */
+
+
+void setupP2_P3(void) {
+}

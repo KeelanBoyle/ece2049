@@ -1,0 +1,11 @@
+#ifndef ALIEN_H
+#define ALIEN_H
+
+#include "game.h"
+
+typedef struct Alien {
+	GameObject_t go;
+	ListHandle_t al;
+};
+
+#endif

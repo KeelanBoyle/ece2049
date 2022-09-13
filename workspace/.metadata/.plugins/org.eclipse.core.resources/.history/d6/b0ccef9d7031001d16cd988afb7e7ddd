@@ -1,0 +1,4 @@
+#include <msp430.h>
+
+#define BIT(x) (1 << x)
+#define BIT63 (BIT(6) | BIT(5) | BIT(4) | BIT(3))

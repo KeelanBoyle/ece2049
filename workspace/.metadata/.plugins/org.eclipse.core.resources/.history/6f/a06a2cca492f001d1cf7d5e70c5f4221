@@ -1,0 +1,20 @@
+#ifndef LIST_H
+#define LIST_H
+
+typedef struct ListHandle_t ListHandle_t;
+
+struct ListHandle_t {
+	ListHandle_t* prev;
+	ListHandle_t* next;
+};
+
+typedef struct List_t {
+	ListHandle_t* head;
+	uint16_t length;
+} List_t;
+
+addToList(List_t* list, ListHandle_t* item);
+
+removeFromList(List_t* list, ListHandle_t* item);
+
+#endif

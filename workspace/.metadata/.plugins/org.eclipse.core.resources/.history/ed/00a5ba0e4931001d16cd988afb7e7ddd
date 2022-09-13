@@ -1,0 +1,24 @@
+#include <msp430.h>
+
+#define BIT(x) (1 << x)
+#define BIT74 (BIT(7) | BIT(6) | BIT(5) | BIT(4))
+
+void setupP2_P3(void) {
+	P2SEL &= ~BIT74; /* Set bit 7-4 to 0 to ensure pin in I/O mode */
+	P3SEL &= ~BIT74; /* Set bit 7-4 to 0 to ensure pin in I/O mode */
+
+	P2DIR &= ~BIT74; /* Set bit 7-4 to input mode (0) for port 2  */
+	P3DIR |=  BIT74; /* Set bit 7-4 to output mode (1) for port 3 */
+
+	P2OUT &= ~BIT74; /* Set bit 7-4 resistors to pull-down mode on port 2 */
+	P2REN |=  BIT74; /* Enable Pull-down resistor for bits 7-4 on port 2  */
+}
+
+void in2_out3(void) {
+	P3OUT &= ~BIT74; /* Clear bits 7-4 of Port 3 Output */
+	P3OUT |= (P2IN & BIT74); /* Set Bit 7-4 of port 3 out to bit 7-4 of port 2 in */
+}
+
+void main() {
+
+}

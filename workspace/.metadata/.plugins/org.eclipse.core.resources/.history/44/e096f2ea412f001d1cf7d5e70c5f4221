@@ -1,0 +1,12 @@
+#ifndef ALIEN_H
+#define ALIEN_H
+
+#include "game.h"
+
+typedef AlienComponent_t {
+	int number;
+}
+
+COMPONENT_LIST_OF(AlienComponent_t, 30)
+
+#endif

@@ -1,0 +1,12 @@
+
+**** Clean-only build of configuration Debug for project Lab1 ****
+
+/home/arthur/ti/ccs1200/ccs/utils/bin/gmake -k -j 12 clean -O 
+ 
+rm -rf  "Lab1.hex"  "Lab1.out" 
+rm -rf "main.obj" "welcome.obj" "LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.obj" "LcdDriver/Sharp96x96.obj" "fonts/fontfixed6x8.obj" "images/LPRocket_96x37.obj" "images/TI_Logo_69x64.obj" "src/game.obj" "src/heap.obj" "src/list.obj" "src/peripherals.obj" "src/scene.obj" 
+rm -rf "main.d" "welcome.d" "LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.d" "LcdDriver/Sharp96x96.d" "fonts/fontfixed6x8.d" "images/LPRocket_96x37.d" "images/TI_Logo_69x64.d" "src/game.d" "src/heap.d" "src/list.d" "src/peripherals.d" "src/scene.d" 
+Finished clean
+ 
+
+**** Build Finished ****

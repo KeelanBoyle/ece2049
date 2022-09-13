@@ -1,0 +1,5 @@
+#define P2IN ((uint8_t*)0x201)
+
+
+void setupP2_P3(void) {
+}
