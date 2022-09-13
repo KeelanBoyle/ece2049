@@ -1,17 +1,22 @@
 #include <msp430.h> 
 #include <main.h>
-#include <global.h>
 #include <grlib.h>
-#include <gameloop.h>
-#include "peripherals.h"
+
+#include <src/global.h>
+#include <src/game.h>
+#include <src/peripherals.h>
+#include <src/heap.h>
 
 State g_State = MAIN_MENU;
 
 void loop(void) {
 
 
+
     char     intro[14]="SPACE INVADERS";
     char     defeat[20]="RESISTANCE IS FUTILE";
+    long int i = 0;
+
     switch(g_State) {
     case MAIN_MENU:
 
@@ -45,6 +50,9 @@ int main(void)
 	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
 	configDisplay();
 	configKeypad();
+
+	initHeap();
+	
 	initGameState();
 
 	while(1) {
