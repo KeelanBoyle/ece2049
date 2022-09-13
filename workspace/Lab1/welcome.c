@@ -8,12 +8,12 @@
 #include "src/peripherals.h"
 
 void displayMessage(char message[]){
-    Graphics_clearDisplay(&g_sContext);
+
     Graphics_drawStringCentered(&g_sContext, message, AUTO_STRING_LENGTH, 48, 15, TRANSPARENT_TEXT);
 
     char playAgian[21]= "Press * to play agian";
     Graphics_drawStringCentered(&g_sContext, playAgian, AUTO_STRING_LENGTH, 48, 45, TRANSPARENT_TEXT);
-
+    Graphics_flushBuffer(&g_sContext);
 }
 
 void countDown(){

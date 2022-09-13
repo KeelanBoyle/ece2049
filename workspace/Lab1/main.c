@@ -8,9 +8,10 @@
 #include <src/heap.h>
 
 State g_State = MAIN_MENU;
+#define FRQ_TO_TMR(x) (0x7fff / x)
 
 void loop(void) {
-
+    volatile uint16_t timer = TBR;
 
 
     char     intro[14]="SPACE INVADERS";
@@ -28,20 +29,28 @@ void loop(void) {
         }
         break;
     case GAME_LOOP:
+        Graphics_clearDisplay(&g_sContext);
     	gameLoop();
         break;
     case GAME_OVER:
 
+        if(timer > FRQ_TO_TMR(0x1)) {
+            CLEAR_TMRB;
+            g_State = MAIN_MENU;
+        }
+        else{
+
       displayMessage(defeat);
-      //wait some time
-      g_State = MAIN_MENU;
+        }
+
+
         break;
     default:
 
         g_State = GAME_OVER;
         break;
     }
-    Graphics_flushBuffer(&g_sContext);
+
 }
 
 
