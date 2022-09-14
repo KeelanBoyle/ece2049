@@ -1,7 +1,12 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include <main.h>
+#include <msp430.h>
+
+#define CLEAR_TMRB (TBCTL |= TBCLR);
+#define FRQ_TO_TMR(x) (0x7fff / x)
+
+#define DELAY(x) CLEAR_TMRB; while(TBR < (0x20 * x)) {} // Wait in 1024th second increments.
 
 #define HEAP_SIZE 1024
 
@@ -21,5 +26,10 @@ typedef enum State {
 } State;
 
 extern State g_State;
+
+static char playAgainText1[] = "Press * to";
+static char playAgainText2[] = "play again";
+static char introText[]= "SPACE INVADERS";
+static char defeatText[]= "RESISTANCE IS FUTILE";
 
 #endif

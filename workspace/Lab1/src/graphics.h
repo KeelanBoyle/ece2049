@@ -8,7 +8,7 @@ static const uint32_t palette[] =
 		0xffffff, 0x000000
 };
 
-const uint8_t Alien_Pixel_Data[] = {
+static const uint8_t Alien_Pixel_Data[] = {
 		0xff,
 		0xff,
 		0xff,
@@ -27,7 +27,7 @@ const uint8_t Alien_Pixel_Data[] = {
 		0b11110001,
 };
 
-Graphics_Image Alien_Sprite = {
+static Graphics_Image Alien_Sprite = {
 		IMAGE_FMT_1BPP_UNCOMP,
 		8,
 		16,

@@ -17,11 +17,7 @@
 Scene_t* activeScene;
 char lastKey = 0;
 
-#define CLEAR_TMRB (TBCTL |= TBCLR);
-#define FRQ_TO_TMR(x) (0x7fff / x)
-
 void getInputs() {
-	// poll keys
 	char key = getKey();
 	if(key) {
 		lastKey = key;
@@ -117,22 +113,14 @@ void setActiveScene(Scene_t* scene) {
 	activeScene = scene;
 }
 
-void cfg_timer() {
-	/* 16 bits, Clock source ACLK, Continuous Mode */
-	TBCTL  = CNTL_0 | TBSSEL_1 | MC_2;
-	CLEAR_TMRB;
-}
-
 void initGameState() {
-	cfg_timer();
-
 	Scene_t* scene = allocate(sizeof(Scene_t));
 	scene->active_aliens = 0;
 	scene->active_bullets = 0;
 	scene->aliens.next = NULL;
 	scene->bullets.next = NULL;
 	scene->generator = generateRandomAlien;
-	scene->difficulty = 9600;
+	scene->difficulty = 30000;
 
 	setActiveScene(scene);
 }
