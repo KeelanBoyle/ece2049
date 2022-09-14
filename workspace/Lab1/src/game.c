@@ -128,7 +128,6 @@ void setActiveScene(Scene_t* scene) {
 	activeScene = scene;
 }
 
-
 void initGameState() {
 
 	Scene_t* scene = allocate(sizeof(Scene_t));
