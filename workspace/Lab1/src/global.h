@@ -3,10 +3,11 @@
 
 #include <msp430.h>
 
-#define CLEAR_TMRB (TBCTL |= TBCLR);
+#define GET_TMR (TA1R)
+#define CLEAR_TMR (TA1CTL |= TACLR);
 #define FRQ_TO_TMR(x) (0x7fff / x)
 
-#define DELAY(x) CLEAR_TMRB; while(TBR < (0x20 * x)) {} // Wait in 1024th second increments.
+#define DELAY(x) CLEAR_TMR; while(GET_TMR < (0x20 * x)) {} // Wait in 1024th second increments.
 
 #define HEAP_SIZE 1024
 

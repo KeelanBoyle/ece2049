@@ -40,6 +40,7 @@ void drawUI() {
 }
 
 void updateActiveScene() {
+    BuzzerOff();
 	/* Shoot bullet if button pressed*/
 	if(lastKey >= '1' && lastKey <= '5' && activeScene->active_bullets < 5) {
 		Bullet_t* bullet = (Bullet_t*)allocate(sizeof(Bullet_t));
@@ -49,11 +50,11 @@ void updateActiveScene() {
 		activeScene->active_bullets++;
 
 		lastKey = 0;
+		BuzzerOn(256);
 	}
 
 	/* Generate new aliens */
 	activeScene->generator(activeScene);
-	Alien_t* aIter = (Alien_t*)activeScene->aliens.next;
 
 	Bullet_t* bIter = (Bullet_t*)activeScene->bullets.next;
 	while(bIter != NULL) {
@@ -62,10 +63,12 @@ void updateActiveScene() {
 	}
 
 	/* Update positions */
+    Alien_t* aIter = (Alien_t*)activeScene->aliens.next;
 	while(aIter != NULL) {
 		aIter->y = aIter->y + (aIter->speed);
 
 		if(aIter->y > UNITS_Y - 8) {
+		    BuzzerOff();
 			g_State = GAME_OVER;
 		}
 
@@ -114,9 +117,9 @@ void drawActiveScene() {
 };
 
 void gameLoop() {
-	volatile uint16_t timer = TBR;
+	volatile uint16_t timer = GET_TMR;
 	if(timer > FRQ_TO_TMR(UPDATE_FREQ)) {
-		CLEAR_TMRB;
+		CLEAR_TMR;
 		updateActiveScene();
 		drawActiveScene();
 	} else {
@@ -126,6 +129,10 @@ void gameLoop() {
 
 void setActiveScene(Scene_t* scene) {
 	activeScene = scene;
+}
+
+void playLossBuzzer() {
+
 }
 
 void initGameState() {

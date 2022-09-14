@@ -31,9 +31,13 @@ void loop(void) {
     case GAME_OVER:
         initGameState();
         displayMessage(defeatText);
+        BuzzerOn(128);
         DELAY(1024);
+        BuzzerOn(256);
         DELAY(1024);
+        BuzzerOn(512);
         DELAY(1024);
+        BuzzerOff();
         g_State = MAIN_MENU;
         break;
 
@@ -45,8 +49,8 @@ void loop(void) {
 
 void cfg_timer() {
     /* 16 bits, Clock source ACLK, Continuous Mode */
-    TBCTL  = CNTL_0 | TBSSEL_1 | MC_2;
-    CLEAR_TMRB;
+    TA1CTL  = CNTL_0 | TASSEL_1 | MC_2;
+    CLEAR_TMR;
 }
 
 
