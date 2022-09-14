@@ -24,13 +24,17 @@ void countDown(){
     Graphics_clearDisplay(&g_sContext);
     Graphics_drawStringCentered(&g_sContext, "3...", AUTO_STRING_LENGTH, 48, 15, TRANSPARENT_TEXT);
     Graphics_flushBuffer(&g_sContext);
+    BuzzerOn(256);
     DELAY(1024);
     Graphics_clearDisplay(&g_sContext);
     Graphics_drawStringCentered(&g_sContext, "2...", AUTO_STRING_LENGTH, 48, 35, TRANSPARENT_TEXT);
     Graphics_flushBuffer(&g_sContext);
+    BuzzerOn(128);
     DELAY(1024);
     Graphics_clearDisplay(&g_sContext);
     Graphics_drawStringCentered(&g_sContext, "1...", AUTO_STRING_LENGTH, 48, 55, TRANSPARENT_TEXT);
     Graphics_flushBuffer(&g_sContext);
+    BuzzerOn(64);
     DELAY(1024);
+    BuzzerOff();
 }
