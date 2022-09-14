@@ -30,7 +30,9 @@ void loop(void) {
 
     case GAME_OVER:
         displayMessage(defeatText);
-        DELAY(2048);
+        DELAY(1024);
+        DELAY(1024);
+        DELAY(1024);
         g_State = MAIN_MENU;
         break;
 

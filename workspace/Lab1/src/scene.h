@@ -19,13 +19,14 @@ struct Scene_t {
 
 typedef struct Alien_t {
 	ListHandle_t lh;
-	uint16_t x, y, speed, number;
-	Graphics_Image* sprite;
+	uint16_t col;
+	uint16_t y, speed; // Speed measured in units/update
 } Alien_t;
 
 typedef struct Bullet_t {
 	ListHandle_t lh;
-	uint16_t x, y;
+	uint16_t col;
+	uint16_t y;
 } Bullet_t;
 
 void generateRandomAlien(Scene_t* scene);

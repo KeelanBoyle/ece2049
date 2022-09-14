@@ -13,8 +13,13 @@
 #include "game.h"
 #include "grlib.h"
 #include "list.h"
+#include "graphics.h"
+
+#define TEXT_OFFSET_OF_COL(x) (x * 16)
+#define IMAGE_OFFSET_OF_COL(x) (88 - (x * 16))
 
 Scene_t* activeScene;
+
 char lastKey = 0;
 
 void getInputs() {
@@ -24,12 +29,22 @@ void getInputs() {
 	}
 };
 
+void drawUI() {
+    Graphics_clearDisplay(&g_sContext);
+    Graphics_drawStringCentered(&g_sContext, "1", 1, TEXT_OFFSET_OF_COL(1), 90 , TRANSPARENT_TEXT);
+    Graphics_drawStringCentered(&g_sContext, "2", 1, TEXT_OFFSET_OF_COL(2), 90, TRANSPARENT_TEXT);
+    Graphics_drawStringCentered(&g_sContext, "3", 1, TEXT_OFFSET_OF_COL(3), 90, TRANSPARENT_TEXT);
+    Graphics_drawStringCentered(&g_sContext, "4", 1, TEXT_OFFSET_OF_COL(4), 90, TRANSPARENT_TEXT);
+    Graphics_drawStringCentered(&g_sContext, "5", 1, TEXT_OFFSET_OF_COL(5), 90, TRANSPARENT_TEXT);
+    Graphics_flushBuffer(&g_sContext);
+}
+
 void updateActiveScene() {
 	/* Shoot bullet if button pressed*/
 	if(lastKey >= '1' && lastKey <= '5' && activeScene->active_bullets < 5) {
 		Bullet_t* bullet = (Bullet_t*)allocate(sizeof(Bullet_t));
-		bullet->x = UNITS_X;
-		bullet->y = ((lastKey - '1') + 1) * (9600 / 5);
+		bullet->y = UNITS_Y - 16;
+		bullet->col = lastKey - '0';
 		addToList(&activeScene->bullets, (ListHandle_t*)bullet);
 		activeScene->active_bullets++;
 
@@ -42,22 +57,22 @@ void updateActiveScene() {
 
 	Bullet_t* bIter = (Bullet_t*)activeScene->bullets.next;
 	while(bIter != NULL) {
-		bIter->x -= 512 / UPDATE_FREQ;
+		bIter->y -= 8;
 		bIter = (Bullet_t*)bIter->lh.next;
 	}
 
 	/* Update positions */
 	while(aIter != NULL) {
-		aIter->x = aIter->x + (aIter->speed / UPDATE_FREQ);
+		aIter->y = aIter->y + (aIter->speed);
 
-		if(aIter->x > UNITS_X) {
+		if(aIter->y > UNITS_Y - 8) {
 			g_State = GAME_OVER;
 		}
 
 		/* Check for bullet hits */
 		bIter = (Bullet_t*)activeScene->bullets.next;
 		while(bIter != NULL) {
-			if(bIter->y == aIter->y && bIter->x < aIter->x) {
+			if(bIter->col == aIter->col && bIter->y < aIter->y) {
 				removeFromList((ListHandle_t*)bIter);
 				removeFromList((ListHandle_t*)aIter);
 				free((void*)aIter);
@@ -65,8 +80,7 @@ void updateActiveScene() {
 
 				activeScene->active_aliens--;
 				activeScene->active_bullets--;
-
-				activeScene->difficulty += 800;
+				activeScene->difficulty++;
 
 				break;
 			}
@@ -81,19 +95,20 @@ void updateActiveScene() {
 };
 
 void drawActiveScene() {
-	Graphics_clearDisplay(&g_sContext);
+    // Draw UI At Bottom.
+    drawUI();
 
 	Alien_t* alienIter = (Alien_t*)activeScene->aliens.next;
 	while(alienIter != NULL) {
-		Graphics_drawImage(&g_sContext, alienIter->sprite, (alienIter->x >> 7), (alienIter->y >> 7));
+		Graphics_drawImage(&g_sContext, &Alien_Sprite,  alienIter->y, IMAGE_OFFSET_OF_COL(alienIter->col));
 		alienIter = (Alien_t*)alienIter->lh.next;
 	}
 
 	Bullet_t* bulletIter = (Bullet_t*)activeScene->bullets.next;
-		while(bulletIter != NULL) {
-			Graphics_drawPixel(&g_sContext, (((9600 - bulletIter->y) >> 7) + 6), (bulletIter->x >> 7));
-			bulletIter = (Bullet_t*)bulletIter->lh.next;
-		}
+    while(bulletIter != NULL) {
+        Graphics_drawImage(&g_sContext, &Bullet_Sprite, bulletIter->y, IMAGE_OFFSET_OF_COL(bulletIter->col));
+        bulletIter = (Bullet_t*)bulletIter->lh.next;
+    }
 
 	Graphics_flushBuffer(&g_sContext);
 };
@@ -113,14 +128,16 @@ void setActiveScene(Scene_t* scene) {
 	activeScene = scene;
 }
 
+
 void initGameState() {
+
 	Scene_t* scene = allocate(sizeof(Scene_t));
 	scene->active_aliens = 0;
 	scene->active_bullets = 0;
 	scene->aliens.next = NULL;
 	scene->bullets.next = NULL;
 	scene->generator = generateRandomAlien;
-	scene->difficulty = 30000;
+	scene->difficulty = 1;
 
 	setActiveScene(scene);
 }

@@ -10,10 +10,8 @@
 
 #include "scene.h"
 
-#define UNITS_PER_PIX 128
-
-#define UNITS_X 96 * UNITS_PER_PIX
-#define UNITS_Y 96 * UNITS_PER_PIX
+#define UNITS_X 96
+#define UNITS_Y 96
 
 void setActiveScene(Scene_t* scene);
 void initGameState();

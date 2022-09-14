@@ -30,6 +30,6 @@ extern State g_State;
 static char playAgainText1[] = "Press * to";
 static char playAgainText2[] = "play again";
 static char introText[]= "SPACE INVADERS";
-static char defeatText[]= "RESISTANCE IS FUTILE";
+static char defeatText[]= "HA, YOU LOSE!";
 
 #endif

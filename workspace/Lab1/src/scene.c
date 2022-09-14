@@ -10,11 +10,10 @@ void generateRandomAlien(Scene_t* scene) {
 	}
 
 	Alien_t* alien = (Alien_t*)allocate(sizeof(Alien_t));
-	alien->x = 0;
-	alien->number = ((rand() % 5) + 1);
-	alien->y = alien->number * (9600 / 5);
+
+	alien->y = 0;
+	alien->col = ((rand() % 5) + 1);
 	alien->speed = scene->difficulty;
-	alien->sprite = &Alien_Sprite;
 
 	addToList(&scene->aliens, alien);
 
