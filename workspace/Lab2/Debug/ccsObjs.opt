@@ -5,6 +5,8 @@
 "./fonts/fontfixed6x8.obj"
 "./images/LPRocket_96x37.obj"
 "./images/TI_Logo_69x64.obj"
+"./src/gui.obj"
+"./src/musicplayer.obj"
 "../lnk_msp430f5529.cmd"
 "../lib/grlib.lib"
 -llibmath.a
