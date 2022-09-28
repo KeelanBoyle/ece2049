@@ -2,6 +2,7 @@
 #include "songs.h"
 #include "grlib.h"
 #include "peripherals.h"
+#include "msp430.h"
 
 uint8_t currentPage = 0;
 GUISTATE state = WELCOME;
@@ -56,9 +57,61 @@ void drawWelcomeScreen() {
     Graphics_clearDisplay(&g_sContext);
     Graphics_drawStringCentered(&g_sContext, "MSP430", AUTO_STRING_LENGTH, 48, 15, TRANSPARENT_TEXT);
     Graphics_drawStringCentered(&g_sContext, "HERO!", AUTO_STRING_LENGTH, 48, 30, TRANSPARENT_TEXT);
+    Graphics_drawStringCentered(&g_sContext, "# TO START", AUTO_STRING_LENGTH, 48, 45, TRANSPARENT_TEXT);
     Graphics_flushBuffer(&g_sContext);
+}
 
-    setGuiState(SONGLIST);
+void drawFinishedScreen() {
+    Graphics_clearDisplay(&g_sContext);
+    if(getScore() > (currentlyPlaying()->length / 2)) {
+        Graphics_drawStringCentered(&g_sContext, "GOOD JOB!", AUTO_STRING_LENGTH, 48, 15, TRANSPARENT_TEXT);
+        Graphics_drawStringCentered(&g_sContext, "YOU GOT", AUTO_STRING_LENGTH, 48, 30, TRANSPARENT_TEXT);
+        Graphics_drawStringCentered(&g_sContext, "MORE THAN 50%", AUTO_STRING_LENGTH, 48, 45, TRANSPARENT_TEXT);
+    }
+    else {
+        Graphics_drawStringCentered(&g_sContext, "YOU SUCK!", AUTO_STRING_LENGTH, 48, 15, TRANSPARENT_TEXT);
+        Graphics_drawStringCentered(&g_sContext, "YOU GOT", AUTO_STRING_LENGTH, 48, 30, TRANSPARENT_TEXT);
+        Graphics_drawStringCentered(&g_sContext, "LESS THAN 50%", AUTO_STRING_LENGTH, 48, 45, TRANSPARENT_TEXT);
+    }
+
+    Graphics_drawStringCentered(&g_sContext, "# To Return", AUTO_STRING_LENGTH, 48, 60, TRANSPARENT_TEXT);
+    Graphics_flushBuffer(&g_sContext);
+}
+
+void drawStartingScreen() {
+    // Set up so we can use TimerA2 to delay here
+    TA2CTL |= TASSEL_1 | ID_0; // Setup Timer
+    TA2CCTL0 &= ~CCIE; // stop interrupts
+    TA2CCR0 = -1;
+
+    TA2CTL |= MC_1;
+    Graphics_clearDisplay(&g_sContext);
+    Graphics_drawStringCentered(&g_sContext, "3", AUTO_STRING_LENGTH, 48, 15, TRANSPARENT_TEXT);
+    Graphics_flushBuffer(&g_sContext);
+    (TA2CTL |= TACLR);
+    while(TA2R < 32768) {}
+    Graphics_clearDisplay(&g_sContext);
+    Graphics_drawStringCentered(&g_sContext, "2", AUTO_STRING_LENGTH, 48, 15, TRANSPARENT_TEXT);
+    Graphics_flushBuffer(&g_sContext);
+    (TA2CTL |= TACLR);
+    while(TA2R < 32768) {}
+    Graphics_clearDisplay(&g_sContext);
+    Graphics_drawStringCentered(&g_sContext, "1", AUTO_STRING_LENGTH, 48, 15, TRANSPARENT_TEXT);
+    Graphics_flushBuffer(&g_sContext);
+    (TA2CTL |= TACLR);
+    while(TA2R < 32768) {}
+    Graphics_clearDisplay(&g_sContext);
+    Graphics_drawStringCentered(&g_sContext, "GO!", AUTO_STRING_LENGTH, 48, 15, TRANSPARENT_TEXT);
+    Graphics_flushBuffer(&g_sContext);
+    (TA2CTL |= TACLR);
+    while(TA2R < 32768) {}
+
+    TA2CTL &= ~MC_1;
+    TA2CCTL0 = CCIE; // reset timer for song
+    TA2CTL |= TASSEL_1 | ID_0; // reset timer for song
+
+    restartSong();
+    setGuiState(PLAYING);
 }
 
 void setCurrentPage(uint8_t page) {
@@ -82,8 +135,8 @@ void handleSonglistKey(char key) {
     if(key >= '0' && key <= '9') {
         int numSongs = sizeof(songList)/sizeof(Song*);
         if((currentPage * 10) + (key - '0') < numSongs) {
-            playSong(songList[(currentPage * 10) + (key - '0')]);
-            setGuiState(PLAYING);
+            setSong(songList[(currentPage * 10) + (key - '0')]);
+            setGuiState(STARTING);
         }
     }
 
@@ -103,18 +156,28 @@ void handlePlayingKey(char key) {
     }
 }
 
+void handleWelcomeKey(char key) {
+    if(key == '#') {
+        setGuiState(SONGLIST);
+    }
+}
+
 void handleGuiKey(char key) {
     switch(state) {
     case PAUSE:
         handlePauseKey(key);
         break;
     case WELCOME:
+        handleWelcomeKey(key);
         break;
     case SONGLIST:
         handleSonglistKey(key);
         break;
     case PLAYING:
         handlePlayingKey(key);
+        break;
+    case FINISHED:
+        handleWelcomeKey(key);
         break;
     default:
         break;
@@ -136,6 +199,12 @@ void setGuiState(GUISTATE newState) {
         break;
     case WELCOME:
         drawWelcomeScreen();
+        break;
+    case FINISHED:
+        drawFinishedScreen();
+        break;
+    case STARTING:
+        drawStartingScreen();
         break;
     default:
         drawSongList();

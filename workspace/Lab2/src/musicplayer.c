@@ -25,6 +25,7 @@
 #define STOP_RED P1OUT &= ~BIT0;
 
 const Song* active_song;
+uint16_t score;
 MODE active_mode;
 uint16_t note_idx;
 uint8_t onBeat;
@@ -45,6 +46,7 @@ void handleMusicButtons(uint8_t buttons) {
     }
 
     if(buttons & leds) {
+        score++;
         LIGHT_GREEN;
         STOP_RED;
         return;
@@ -63,13 +65,22 @@ void initMusicPlayer(void) {
     setPlayerMode(BEAT);
 };
 
-void playSong(const Song* song) {
+void setSong(const Song* song) {
+    PAUSE_TIMER;
     active_song = song;
     note_idx = -1;
     onBeat = 1;
-    playing = 1;
+}
+
+void restartSong() {
     CLR_TIMER;
     RESUME_TIMER;
+    playing = 1;
+    score = 0;
+}
+
+uint16_t getScore() {
+    return score;
 }
 
 void stopSong(void) {
@@ -141,7 +152,7 @@ __interrupt void TimerA2_ISR (void)
     }
     else {
         BuzzerOff();
-        setGuiState(SONGLIST);
+        setGuiState(FINISHED);
         setLeds(0);
         STOP_GREEN;
         STOP_RED;

@@ -15,7 +15,9 @@ typedef enum GUISTATE {
     WELCOME,
     SONGLIST,
     PLAYING,
-    PAUSE
+    PAUSE,
+    FINISHED,
+    STARTING
 } GUISTATE;
 
 uint8_t getCurrentPage();
