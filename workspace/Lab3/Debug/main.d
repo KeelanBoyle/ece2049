@@ -23,6 +23,8 @@ main.obj: /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/in
 main.obj: /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/assert.h
 main.obj: /home/arthur/ece2049/workspace/Lab3/grlib/grlib.h
 main.obj: /home/arthur/ece2049/workspace/Lab3/LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.h
+main.obj: /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/stdio.h
+main.obj: /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/stdarg.h
 
 ../main.c:
 
@@ -69,4 +71,8 @@ main.obj: /home/arthur/ece2049/workspace/Lab3/LcdDriver/HAL_MSP_EXP430FR5529_Sha
 /home/arthur/ece2049/workspace/Lab3/grlib/grlib.h:
 
 /home/arthur/ece2049/workspace/Lab3/LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.h:
+
+/home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/stdio.h:
+
+/home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/stdarg.h:
 

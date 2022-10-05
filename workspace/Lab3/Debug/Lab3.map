@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker Unix v21.6.0                   
 ******************************************************************************
->> Linked Tue Oct  4 22:54:22 2022
+>> Linked Wed Oct  5 00:26:20 2022
 
 OUTPUT FILE NAME:   <Lab3.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 00004400
@@ -19,8 +19,8 @@ MEMORY CONFIGURATION
   INFOB                 00001900   00000080  00000000  00000080  RWIX
   INFOA                 00001980   00000080  00000000  00000080  RWIX
   USBRAM                00001c00   00000800  00000000  00000800  RWIX
-  RAM                   00002400   00002000  000000a2  00001f5e  RWIX
-  FLASH                 00004400   0000bb80  00000044  0000bb3c  RWIX
+  RAM                   00002400   00002000  000005a2  00001a5e  RWIX
+  FLASH                 00004400   0000bb80  00000516  0000b66a  RWIX
   INT00                 0000ff80   00000002  00000000  00000002  RWIX
   INT01                 0000ff82   00000002  00000000  00000002  RWIX
   INT02                 0000ff84   00000002  00000000  00000002  RWIX
@@ -85,7 +85,7 @@ MEMORY CONFIGURATION
   INT61                 0000fffa   00000002  00000002  00000000  RWIX
   INT62                 0000fffc   00000002  00000002  00000000  RWIX
   RESET                 0000fffe   00000002  00000002  00000000  RWIX
-  FLASH2                00010000   000143f8  0000014e  000142aa  RWIX
+  FLASH2                00010000   000143f8  0000188a  00012b6e  RWIX
 
 
 SECTION ALLOCATION MAP
@@ -93,8 +93,15 @@ SECTION ALLOCATION MAP
  output                                  attributes/
 section   page    origin      length       input sections
 --------  ----  ----------  ----------   ----------------
-.data      0    00002400    00000002     UNINITIALIZED
-                  00002400    00000002     Sharp96x96.obj (.data)
+.bss       0    00002400    0000049c     UNINITIALIZED
+                  00002400    00000480     (.common:DisplayBuffer)
+                  00002880    0000001c     (.common:g_sContext)
+
+.data      0    0000289c    00000066     UNINITIALIZED
+                  0000289c    00000030     main.obj (.data:MonthToDay)
+                  000028cc    00000030     main.obj (.data:Months)
+                  000028fc    00000004     main.obj (.data)
+                  00002900    00000002     Sharp96x96.obj (.data)
 
 .stack     0    00004360    000000a0     UNINITIALIZED
                   00004360    00000004     rts430x_lc_rd_eabi.lib : boot.c.obj (.stack)
@@ -106,15 +113,24 @@ section   page    origin      length       input sections
                   0000441c    0000000a     peripherals.obj (.text:_isr:TIMER1_A0_ISR)
                   00004426    00000008     rts430x_lc_rd_eabi.lib : isr_trap.asm.obj (.text:_isr:__TI_ISR_TRAP)
 
-.cinit     0    0000442e    00000016     
-                  0000442e    00000008     (__TI_handler_table)
-                  00004436    00000006     (.cinit..data.load) [load image, compression = lzss]
-                  0000443c    00000008     (__TI_cinit_table)
+.cinit     0    000048b0    00000066     
+                  000048b0    00000044     (.cinit..data.load) [load image, compression = lzss]
+                  000048f4    0000000c     (__TI_handler_table)
+                  00004900    00000006     (.cinit..bss.load) [load image, compression = zero_init]
+                  00004906    00000010     (__TI_cinit_table)
 
 .binit     0    00004400    00000000     
 
 .init_array 
 *          0    00004400    00000000     UNINITIALIZED
+
+.const     0    0000442e    00000482     
+                  0000442e    000002f8     fontfixed6x8.obj (.const:.string:g_pucFontFixed6x8Data)
+                  00004726    000000c8     fontfixed6x8.obj (.const:g_sFontFixed6x8)
+                  000047ee    00000060     main.obj (.const:.string)
+                  0000484e    0000002c     Sharp96x96.obj (.const:g_sharp96x96LCD)
+                  0000487a    00000026     rts430x_lc_rd_eabi.lib : _printfi.c.obj (.const:.string)
+                  000048a0    00000010     Sharp96x96.obj (.const:.string:referse_data)
 
 RTC        0    0000ffd2    00000002     
                   0000ffd2    00000002     rts430x_lc_rd_eabi.lib : int41.asm.obj (.int41)
@@ -193,83 +209,156 @@ SYSNMI     0    0000fffc    00000002
 .reset     0    0000fffe    00000002     
                   0000fffe    00000002     rts430x_lc_rd_eabi.lib : boot.c.obj (.reset)
 
-.text      0    00010000    0000014e     
-                  00010000    00000076     rts430x_lc_rd_eabi.lib : copy_decompress_lzss.c.obj (.text:decompress:lzss:__TI_decompress_lzss)
-                  00010076    00000054                            : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit_hold_wdt:__TI_auto_init_nobinit_nopinit_hold_wdt)
-                  000100ca    00000048     Sharp96x96.obj (.text:Sharp96x96_SendToggleVCOMCommand)
-                  00010112    00000014     rts430x_lc_rd_eabi.lib : memcpy.c.obj (.text:memcpy)
-                  00010126    00000012                            : copy_decompress_none.c.obj (.text:decompress:none:__TI_decompress_none)
-                  00010138    0000000a     main.obj (.text:main)
-                  00010142    00000006     rts430x_lc_rd_eabi.lib : exit.c.obj (.text:abort)
-                  00010148    00000004                            : pre_init.c.obj (.text:_system_pre_init)
-                  0001014c    00000002                            : startup.c.obj (.text:_system_post_cinit)
+.text      0    00010000    0000188a     
+                  00010000    000007e6     grlib.lib : string.obj (.text:Graphics_drawString)
+                  000107e6    0000017a     Sharp96x96.obj (.text:Sharp96x96_RectFill)
+                  00010960    00000168     main.obj (.text:dispTime)
+                  00010ac8    00000132     rts430x_lc_rd_eabi.lib : _printfi.c.obj (.text:__TI_printfi_minimal:_setfield___TI_printfi_minimal)
+                  00010bfa    00000128     Sharp96x96.obj (.text:Sharp96x96_LineDrawH)
+                  00010d22    000000dc     grlib.lib : line.obj (.text:Graphics_drawLineH)
+                  00010dfe    000000dc     rts430x_lc_rd_eabi.lib : _printfi.c.obj (.text:__TI_printfi_minimal:__TI_printfi_minimal)
+                  00010eda    000000da                            : _printfi.c.obj (.text:__TI_printfi_minimal:_pproc_diouxp___TI_printfi_minimal)
+                  00010fb4    000000c4     main.obj (.text:secondsToTime)
+                  00011078    000000aa     Sharp96x96.obj (.text:Sharp96x96_Flush)
+                  00011122    00000088     Sharp96x96.obj (.text:Sharp96x96_LineDrawV)
+                  000111aa    00000076     rts430x_lc_rd_eabi.lib : copy_decompress_lzss.c.obj (.text:decompress:lzss:__TI_decompress_lzss)
+                  00011220    0000006a     HAL_MSP_EXP430FR5529_Sharp96x96.obj (.text:Sharp96x96_Init)
+                  0001128a    00000062     rts430x_lc_rd_eabi.lib : snprintf.c.obj (.text:snprintf)
+                  000112ec    00000058                            : div32u.asm.obj (.text)
+                  00011344    00000056     Sharp96x96.obj (.text:Sharp96x96_PixelDraw)
+                  0001139a    00000054     Sharp96x96.obj (.text:Sharp96x96_DrawMultiple)
+                  000113ee    00000054     rts430x_lc_rd_eabi.lib : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit_hold_wdt:__TI_auto_init_nobinit_nopinit_hold_wdt)
+                  00011442    00000052     Sharp96x96.obj (.text:Sharp96x96_ClearScreen)
+                  00011494    0000004e     peripherals.obj (.text:configDisplay)
+                  000114e2    0000004a     grlib.lib : string.obj (.text:Graphics_getNumberOfLeadingZeros)
+                  0001152c    00000048     Sharp96x96.obj (.text:Sharp96x96_SendToggleVCOMCommand)
+                  00011574    00000048     rts430x_lc_rd_eabi.lib : _printfi.c.obj (.text:__TI_printfi_minimal:_pproc_str___TI_printfi_minimal)
+                  000115bc    0000003c     grlib.lib : context.obj (.text:Graphics_initContext)
+                  000115f8    00000038     main.obj (.text:main)
+                  00011630    00000036     rts430x_lc_rd_eabi.lib : snprintf.c.obj (.text:_outs)
+                  00011666    0000002a     Sharp96x96.obj (.text:Sharp96x96_InitializeDisplayBuffer)
+                  00011690    00000026     rts430x_lc_rd_eabi.lib : memccpy.c.obj (.text:memccpy)
+                  000116b6    00000024                            : copy_zero_init.c.obj (.text:decompress:ZI:__TI_zero_init)
+                  000116da    00000024                            : mult32_f5hw.asm.obj (.text)
+                  000116fe    00000020                            : snprintf.c.obj (.text:_outc)
+                  0001171e    0000001e     Sharp96x96.obj (.text:reverse)
+                  0001173c    0000001a     grlib.lib : display.obj (.text:Graphics_drawHorizontalLineOnDisplay)
+                  00011756    00000018               : context.obj (.text:Graphics_setBackgroundColor)
+                  0001176e    00000018               : context.obj (.text:Graphics_setForegroundColor)
+                  00011786    00000018     rts430x_lc_rd_eabi.lib : mult16_f5hw.asm.obj (.text)
+                  0001179e    00000016                            : memset.c.obj (.text:memset)
+                  000117b4    00000016                            : div16u.asm.obj (.text)
+                  000117ca    00000014     Sharp96x96.obj (.text:Sharp96x96_ColorTranslate)
+                  000117de    00000014     rts430x_lc_rd_eabi.lib : memcpy.c.obj (.text:memcpy)
+                  000117f2    00000012                            : copy_decompress_none.c.obj (.text:decompress:none:__TI_decompress_none)
+                  00011804    00000010     grlib.lib : context.obj (.text:Graphics_clearDisplay)
+                  00011814    0000000e               : display.obj (.text:Graphics_clearDisplayOnDisplay)
+                  00011822    0000000e               : display.obj (.text:Graphics_drawPixelOnDisplay)
+                  00011830    0000000e               : display.obj (.text:Graphics_flushOnDisplay)
+                  0001183e    0000000e               : display.obj (.text:Graphics_translateColorOnDisplay)
+                  0001184c    0000000e     rts430x_lc_rd_eabi.lib : strlen.c.obj (.text:strlen)
+                  0001185a    0000000a     grlib.lib : context.obj (.text:Graphics_flushBuffer)
+                  00011864    0000000a     rts430x_lc_rd_eabi.lib : asr16.asm.obj (.text)
+                  0001186e    0000000a                            : lsl16.asm.obj (.text)
+                  00011878    00000006     grlib.lib : context.obj (.text:Graphics_setFont)
+                  0001187e    00000006     rts430x_lc_rd_eabi.lib : exit.c.obj (.text:abort)
+                  00011884    00000004                            : pre_init.c.obj (.text:_system_pre_init)
+                  00011888    00000002                            : startup.c.obj (.text:_system_post_cinit)
 
 MODULE SUMMARY
 
-       Module                       code   ro data   rw data
-       ------                       ----   -------   -------
+       Module                                code   ro data   rw data
+       ------                                ----   -------   -------
     ./
-       peripherals.obj              10     2         0      
-       main.obj                     10     0         0      
-    +--+----------------------------+------+---------+---------+
-       Total:                       20     2         0      
-                                                            
+       main.obj                              612    96        100    
+       peripherals.obj                       88     2         28     
+    +--+-------------------------------------+------+---------+---------+
+       Total:                                700    98        128    
+                                                                     
     ./LcdDriver/
-       Sharp96x96.obj               72     0         2      
-    +--+----------------------------+------+---------+---------+
-       Total:                       72     0         2      
-                                                            
+       Sharp96x96.obj                        1396   60        1154   
+       HAL_MSP_EXP430FR5529_Sharp96x96.obj   106    0         0      
+    +--+-------------------------------------+------+---------+---------+
+       Total:                                1502   60        1154   
+                                                                     
+    ./fonts/
+       fontfixed6x8.obj                      0      960       0      
+    +--+-------------------------------------+------+---------+---------+
+       Total:                                0      960       0      
+                                                                     
+    ../lib/grlib.lib
+       string.obj                            2096   0         0      
+       line.obj                              220    0         0      
+       context.obj                           140    0         0      
+       display.obj                           82     0         0      
+    +--+-------------------------------------+------+---------+---------+
+       Total:                                2538   0         0      
+                                                                     
     /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/lib/rts430x_lc_rd_eabi.lib
-       copy_decompress_lzss.c.obj   118    0         0      
-       autoinit.c.obj               84     0         0      
-       boot.c.obj                   28     2         0      
-       memcpy.c.obj                 20     0         0      
-       copy_decompress_none.c.obj   18     0         0      
-       isr_trap.asm.obj             8      0         0      
-       exit.c.obj                   6      0         0      
-       pre_init.c.obj               4      0         0      
-       int41.asm.obj                0      2         0      
-       int42.asm.obj                0      2         0      
-       int43.asm.obj                0      2         0      
-       int44.asm.obj                0      2         0      
-       int45.asm.obj                0      2         0      
-       int46.asm.obj                0      2         0      
-       int47.asm.obj                0      2         0      
-       int48.asm.obj                0      2         0      
-       int50.asm.obj                0      2         0      
-       int51.asm.obj                0      2         0      
-       int52.asm.obj                0      2         0      
-       int53.asm.obj                0      2         0      
-       int54.asm.obj                0      2         0      
-       int55.asm.obj                0      2         0      
-       int56.asm.obj                0      2         0      
-       int57.asm.obj                0      2         0      
-       int58.asm.obj                0      2         0      
-       int59.asm.obj                0      2         0      
-       int60.asm.obj                0      2         0      
-       int61.asm.obj                0      2         0      
-       int62.asm.obj                0      2         0      
-       startup.c.obj                2      0         0      
-    +--+----------------------------+------+---------+---------+
-       Total:                       288    44        0      
-                                                            
-       Stack:                       0      0         160    
-       Linker Generated:            0      22        0      
-    +--+----------------------------+------+---------+---------+
-       Grand Total:                 380    68        162    
+       _printfi.c.obj                        816    38        0      
+       snprintf.c.obj                        184    0         0      
+       copy_decompress_lzss.c.obj            118    0         0      
+       div32u.asm.obj                        88     0         0      
+       autoinit.c.obj                        84     0         0      
+       memccpy.c.obj                         38     0         0      
+       copy_zero_init.c.obj                  36     0         0      
+       mult32_f5hw.asm.obj                   36     0         0      
+       boot.c.obj                            28     2         0      
+       mult16_f5hw.asm.obj                   24     0         0      
+       div16u.asm.obj                        22     0         0      
+       memset.c.obj                          22     0         0      
+       memcpy.c.obj                          20     0         0      
+       copy_decompress_none.c.obj            18     0         0      
+       strlen.c.obj                          14     0         0      
+       asr16.asm.obj                         10     0         0      
+       lsl16.asm.obj                         10     0         0      
+       isr_trap.asm.obj                      8      0         0      
+       exit.c.obj                            6      0         0      
+       pre_init.c.obj                        4      0         0      
+       int41.asm.obj                         0      2         0      
+       int42.asm.obj                         0      2         0      
+       int43.asm.obj                         0      2         0      
+       int44.asm.obj                         0      2         0      
+       int45.asm.obj                         0      2         0      
+       int46.asm.obj                         0      2         0      
+       int47.asm.obj                         0      2         0      
+       int48.asm.obj                         0      2         0      
+       int50.asm.obj                         0      2         0      
+       int51.asm.obj                         0      2         0      
+       int52.asm.obj                         0      2         0      
+       int53.asm.obj                         0      2         0      
+       int54.asm.obj                         0      2         0      
+       int55.asm.obj                         0      2         0      
+       int56.asm.obj                         0      2         0      
+       int57.asm.obj                         0      2         0      
+       int58.asm.obj                         0      2         0      
+       int59.asm.obj                         0      2         0      
+       int60.asm.obj                         0      2         0      
+       int61.asm.obj                         0      2         0      
+       int62.asm.obj                         0      2         0      
+       startup.c.obj                         2      0         0      
+    +--+-------------------------------------+------+---------+---------+
+       Total:                                1588   82        0      
+                                                                     
+       Stack:                                0      0         160    
+       Linker Generated:                     0      102       0      
+    +--+-------------------------------------+------+---------+---------+
+       Grand Total:                          6328   1302      1442   
 
 
 LINKER GENERATED COPY TABLES
 
-__TI_cinit_table @ 0000443c records: 1, size/record: 8, table size: 8
-	.data: load addr=00004436, load size=00000006 bytes, run addr=00002400, run size=00000002 bytes, compression=lzss
+__TI_cinit_table @ 00004906 records: 2, size/record: 8, table size: 16
+	.data: load addr=000048b0, load size=00000044 bytes, run addr=0000289c, run size=00000066 bytes, compression=lzss
+	.bss: load addr=00004900, load size=00000006 bytes, run addr=00002400, run size=0000049c bytes, compression=zero_init
 
 
 LINKER GENERATED HANDLER TABLE
 
-__TI_handler_table @ 0000442e records: 2, size/record: 4, table size: 8
-	index: 0, handler: __TI_decompress_lzss
-	index: 1, handler: __TI_decompress_none
+__TI_handler_table @ 000048f4 records: 3, size/record: 4, table size: 12
+	index: 0, handler: __TI_zero_init
+	index: 1, handler: __TI_decompress_lzss
+	index: 2, handler: __TI_decompress_none
 
 
 GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
@@ -358,7 +447,7 @@ address   name
 00000732  ADC12MEM9                              
 00000733  ADC12MEM9_H                            
 00000732  ADC12MEM9_L                            
-00010142  C$$EXIT                                
+0001187e  C$$EXIT                                
 000008c0  CBCTL0                                 
 000008c1  CBCTL0_H                               
 000008c0  CBCTL0_L                               
@@ -417,6 +506,7 @@ address   name
 00000506  DMACTL3                                
 00000508  DMACTL4                                
 0000050e  DMAIV                                  
+00002400  DisplayBuffer                          
 00000140  FCTL1                                  
 00000141  FCTL1_H                                
 00000140  FCTL1_L                                
@@ -426,6 +516,19 @@ address   name
 00000146  FCTL4                                  
 00000147  FCTL4_H                                
 00000146  FCTL4_L                                
+00011804  Graphics_clearDisplay                  
+00011814  Graphics_clearDisplayOnDisplay         
+0001173c  Graphics_drawHorizontalLineOnDisplay   
+00010d22  Graphics_drawLineH                     
+00011822  Graphics_drawPixelOnDisplay            
+00010000  Graphics_drawString                    
+0001185a  Graphics_flushBuffer                   
+00011830  Graphics_flushOnDisplay                
+000115bc  Graphics_initContext                   
+00011756  Graphics_setBackgroundColor            
+00011878  Graphics_setFont                       
+0001176e  Graphics_setForegroundColor            
+0001183e  Graphics_translateColorOnDisplay       
 000004c4  MAC                                    
 000004da  MAC32H                                 
 000004db  MAC32H_H                               
@@ -465,6 +568,8 @@ address   name
 000004c2  MPYS_L                                 
 000004c1  MPY_H                                  
 000004c0  MPY_L                                  
+0000289c  MonthToDay                             
+000028cc  Months                                 
 000004c8  OP2                                    
 000004e2  OP2H                                   
 000004e3  OP2H_H                                 
@@ -717,7 +822,11 @@ address   name
 0000019a  SYSUNIV                                
 0000019b  SYSUNIV_H                              
 0000019a  SYSUNIV_L                              
-000100ca  Sharp96x96_SendToggleVCOMCommand       
+00011442  Sharp96x96_ClearScreen                 
+00011078  Sharp96x96_Flush                       
+00011220  Sharp96x96_Init                        
+00011344  Sharp96x96_PixelDraw                   
+0001152c  Sharp96x96_SendToggleVCOMCommand       
 00000352  TA0CCR0                                
 00000354  TA0CCR1                                
 00000356  TA0CCR2                                
@@ -1006,21 +1115,21 @@ address   name
 00000932  USBVECINT                              
 00000933  USBVECINT_H                            
 00000932  USBVECINT_L                            
-00002400  VCOMbit                                
+00002900  VCOMbit                                
 0000015c  WDTCTL                                 
 0000015d  WDTCTL_H                               
 0000015c  WDTCTL_L                               
 00004400  __STACK_END                            
 000000a0  __STACK_SIZE                           
-0000443c  __TI_CINIT_Base                        
-00004444  __TI_CINIT_Limit                       
-00004444  __TI_CINIT_Warm                        
-0000442e  __TI_Handler_Table_Base                
-00004436  __TI_Handler_Table_Limit               
+00004906  __TI_CINIT_Base                        
+00004916  __TI_CINIT_Limit                       
+00004916  __TI_CINIT_Warm                        
+000048f4  __TI_Handler_Table_Base                
+00004900  __TI_Handler_Table_Limit               
 00004426  __TI_ISR_TRAP                          
-00010076  __TI_auto_init_nobinit_nopinit_hold_wdt
-00010000  __TI_decompress_lzss                   
-00010126  __TI_decompress_none                   
+000113ee  __TI_auto_init_nobinit_nopinit_hold_wdt
+000111aa  __TI_decompress_lzss                   
+000117f2  __TI_decompress_none                   
 0000ffd2  __TI_int41                             
 0000ffd4  __TI_int42                             
 0000ffd6  __TI_int43                             
@@ -1044,18 +1153,41 @@ address   name
 0000fffa  __TI_int61                             
 0000fffc  __TI_int62                             
 ffffffff  __TI_pprof_out_hndl                    
+00010dfe  __TI_printfi_minimal                   
 ffffffff  __TI_prof_data_size                    
 ffffffff  __TI_prof_data_start                   
+000116b6  __TI_zero_init                         
 ffffffff  __c_args__                             
+000117b4  __mspabi_divu                          
+000112ec  __mspabi_divul                         
+00011786  __mspabi_mpyi_f5hw                     
+000116da  __mspabi_mpyl_f5hw                     
+000117b4  __mspabi_remu                          
+000112ec  __mspabi_remul                         
+0001186e  __mspabi_slli                          
+00011864  __mspabi_srai                          
 00004400  _c_int00_noargs                        
 0000fffe  _reset_vector                          
 00004360  _stack                                 
-0001014c  _system_post_cinit                     
-00010148  _system_pre_init                       
-00010142  abort                                  
-00002401  flagSendToggleVCOMCommand              
-00010138  main                                   
-00010112  memcpy                                 
+00011888  _system_post_cinit                     
+00011884  _system_pre_init                       
+0001187e  abort                                  
+00011494  configDisplay                          
+00010960  dispTime                               
+00002901  flagSendToggleVCOMCommand              
+00002880  g_sContext                             
+00004726  g_sFontFixed6x8                        
+0000484e  g_sharp96x96LCD                        
+000115f8  main                                   
+00011690  memccpy                                
+000117de  memcpy                                 
+0001179e  memset                                 
+000048a0  referse_data                           
+0001171e  reverse                                
+000028fc  seconds                                
+00010fb4  secondsToTime                          
+0001128a  snprintf                               
+0001184c  strlen                                 
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -1793,18 +1925,26 @@ address   name
 000023fd  USBIEPBBAY_7                           
 000023fe  USBIEPBCTY_7                           
 000023ff  USBIEPSIZXY_7                          
-00002400  VCOMbit                                
-00002401  flagSendToggleVCOMCommand              
+00002400  DisplayBuffer                          
+00002880  g_sContext                             
+0000289c  MonthToDay                             
+000028cc  Months                                 
+000028fc  seconds                                
+00002900  VCOMbit                                
+00002901  flagSendToggleVCOMCommand              
 00004360  _stack                                 
 00004400  __STACK_END                            
 00004400  _c_int00_noargs                        
 0000441c  TIMER1_A0_ISR                          
 00004426  __TI_ISR_TRAP                          
-0000442e  __TI_Handler_Table_Base                
-00004436  __TI_Handler_Table_Limit               
-0000443c  __TI_CINIT_Base                        
-00004444  __TI_CINIT_Limit                       
-00004444  __TI_CINIT_Warm                        
+00004726  g_sFontFixed6x8                        
+0000484e  g_sharp96x96LCD                        
+000048a0  referse_data                           
+000048f4  __TI_Handler_Table_Base                
+00004900  __TI_Handler_Table_Limit               
+00004906  __TI_CINIT_Base                        
+00004916  __TI_CINIT_Limit                       
+00004916  __TI_CINIT_Warm                        
 0000ffd2  __TI_int41                             
 0000ffd4  __TI_int42                             
 0000ffd6  __TI_int43                             
@@ -1828,19 +1968,54 @@ address   name
 0000fffa  __TI_int61                             
 0000fffc  __TI_int62                             
 0000fffe  _reset_vector                          
-00010000  __TI_decompress_lzss                   
-00010076  __TI_auto_init_nobinit_nopinit_hold_wdt
-000100ca  Sharp96x96_SendToggleVCOMCommand       
-00010112  memcpy                                 
-00010126  __TI_decompress_none                   
-00010138  main                                   
-00010142  C$$EXIT                                
-00010142  abort                                  
-00010148  _system_pre_init                       
-0001014c  _system_post_cinit                     
+00010000  Graphics_drawString                    
+00010960  dispTime                               
+00010d22  Graphics_drawLineH                     
+00010dfe  __TI_printfi_minimal                   
+00010fb4  secondsToTime                          
+00011078  Sharp96x96_Flush                       
+000111aa  __TI_decompress_lzss                   
+00011220  Sharp96x96_Init                        
+0001128a  snprintf                               
+000112ec  __mspabi_divul                         
+000112ec  __mspabi_remul                         
+00011344  Sharp96x96_PixelDraw                   
+000113ee  __TI_auto_init_nobinit_nopinit_hold_wdt
+00011442  Sharp96x96_ClearScreen                 
+00011494  configDisplay                          
+0001152c  Sharp96x96_SendToggleVCOMCommand       
+000115bc  Graphics_initContext                   
+000115f8  main                                   
+00011690  memccpy                                
+000116b6  __TI_zero_init                         
+000116da  __mspabi_mpyl_f5hw                     
+0001171e  reverse                                
+0001173c  Graphics_drawHorizontalLineOnDisplay   
+00011756  Graphics_setBackgroundColor            
+0001176e  Graphics_setForegroundColor            
+00011786  __mspabi_mpyi_f5hw                     
+0001179e  memset                                 
+000117b4  __mspabi_divu                          
+000117b4  __mspabi_remu                          
+000117de  memcpy                                 
+000117f2  __TI_decompress_none                   
+00011804  Graphics_clearDisplay                  
+00011814  Graphics_clearDisplayOnDisplay         
+00011822  Graphics_drawPixelOnDisplay            
+00011830  Graphics_flushOnDisplay                
+0001183e  Graphics_translateColorOnDisplay       
+0001184c  strlen                                 
+0001185a  Graphics_flushBuffer                   
+00011864  __mspabi_srai                          
+0001186e  __mspabi_slli                          
+00011878  Graphics_setFont                       
+0001187e  C$$EXIT                                
+0001187e  abort                                  
+00011884  _system_pre_init                       
+00011888  _system_post_cinit                     
 ffffffff  __TI_pprof_out_hndl                    
 ffffffff  __TI_prof_data_size                    
 ffffffff  __TI_prof_data_start                   
 ffffffff  __c_args__                             
 
-[780 symbols]
+[823 symbols]
