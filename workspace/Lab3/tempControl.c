@@ -4,7 +4,6 @@
 
 void adcSetup(){
     REFCTL0 &= ~REFMSTR;
-    ADC12REFON=1;
     ADC12CTL0 = ADC12SHT0_10 + ADC12SHT1_10 + ADC12REFON + ADC12ON + ADC12MSC;
     ADC12CTL1 = ADC12CSTARTADD_7 + ADC12SHP;
     P6SEL |= BIT6;
@@ -31,6 +30,31 @@ int* getADCValue(){
     int adcData[3]={value1,value2,value3};
     return adcData;
 }
+
+double averageTempC(){
+
+    tempCount++;
+    int currentPos=tempCount%31;
+    double elements=0;
+    if(tempCount<31){
+        elements= tempCount;
+    }
+    else{
+
+        elements=32.0;
+}
+    tempReading[currentPos]=getADCValue();
+    int i=0;
+    double totalTemp=0;
+        for (i=0; i<31; i++){
+            totalTemp+=tempReading[i];
+        }
+        int averageADC=totalTemp/elements;
+        //convert from adc to temprature
+        double averageTemp= averageADC-CAL_ADC_T30*((85-30)/(CAL_ADC_T85-CAL_ADC_T30))+30;
+        return averageTemp;
+}
+
 int* floatToInt(float num){
     int intNum=num;
     double tempFDec=(num-intNum)*10.0;
@@ -38,6 +62,7 @@ int* floatToInt(float num){
     int hehe[2]={intNum, tenthF};
     return hehe;
 }
+
 void arrToPrint(int* arr, bool celcius ){
     int yPos=10;
 if(celcius ){
@@ -49,6 +74,7 @@ if(celcius ){
 
     Graphics_drawString(&g_sContext, buffer, AUTO_STRING_LENGTH, 20, yPos, TRANSPARENT_TEXT);
 }
+
 void displayTemp(float inAvgTempC){
     int intC[2]=floatToInt(inAvgTempC);
     arrToPrint(intC,true);
@@ -64,4 +90,7 @@ void displayTemp(float inAvgTempC){
     Graphics_drawString(&g_sContext, "Temp (F) =>", AUTO_STRING_LENGTH, 16, 10, TRANSPARENT_TEXT);
 
     return avgTempF;
+}
+void temp(){
+    displayTemp(  averageTempC());
 }
