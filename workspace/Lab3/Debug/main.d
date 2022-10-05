@@ -25,9 +25,6 @@ main.obj: /home/arthur/ece2049/workspace/Lab3/grlib/grlib.h
 main.obj: /home/arthur/ece2049/workspace/Lab3/LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.h
 main.obj: /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/stdio.h
 main.obj: /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/stdarg.h
-main.obj: ../timerResources.h
-main.obj: /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/inttypes.h
-main.obj: /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/machine/_inttypes.h
 main.obj: /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/string.h
 main.obj: /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/xlocale/_string.h
 
@@ -80,12 +77,6 @@ main.obj: /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/in
 /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/stdio.h:
 
 /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/stdarg.h:
-
-../timerResources.h:
-
-/home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/inttypes.h:
-
-/home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/machine/_inttypes.h:
 
 /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include/string.h:
 

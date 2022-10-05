@@ -11,7 +11,6 @@ ORDERED_OBJS += \
 "./main.obj" \
 "./peripherals.obj" \
 "./tempControl.obj" \
-"./timerResources.obj" \
 "./LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.obj" \
 "./LcdDriver/Sharp96x96.obj" \
 "./fonts/fontfixed6x8.obj" \
@@ -166,8 +165,8 @@ Lab3.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "peripherals.obj" "tempControl.obj" "timerResources.obj" "LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.obj" "LcdDriver/Sharp96x96.obj" "fonts/fontfixed6x8.obj" 
-	-$(RM) "main.d" "peripherals.d" "tempControl.d" "timerResources.d" "LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.d" "LcdDriver/Sharp96x96.d" "fonts/fontfixed6x8.d" 
+	-$(RM) "main.obj" "peripherals.obj" "tempControl.obj" "LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.obj" "LcdDriver/Sharp96x96.obj" "fonts/fontfixed6x8.obj" 
+	-$(RM) "main.d" "peripherals.d" "tempControl.d" "LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.d" "LcdDriver/Sharp96x96.d" "fonts/fontfixed6x8.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

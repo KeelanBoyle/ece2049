@@ -9,37 +9,31 @@ CMD_SRCS += \
 C_SRCS += \
 ../main.c \
 ../peripherals.c \
-../tempControl.c \
-../timerResources.c 
+../tempControl.c 
 
 C_DEPS += \
 ./main.d \
 ./peripherals.d \
-./tempControl.d \
-./timerResources.d 
+./tempControl.d 
 
 OBJS += \
 ./main.obj \
 ./peripherals.obj \
-./tempControl.obj \
-./timerResources.obj 
+./tempControl.obj 
 
 OBJS__QUOTED += \
 "main.obj" \
 "peripherals.obj" \
-"tempControl.obj" \
-"timerResources.obj" 
+"tempControl.obj" 
 
 C_DEPS__QUOTED += \
 "main.d" \
 "peripherals.d" \
-"tempControl.d" \
-"timerResources.d" 
+"tempControl.d" 
 
 C_SRCS__QUOTED += \
 "../main.c" \
 "../peripherals.c" \
-"../tempControl.c" \
-"../timerResources.c" 
+"../tempControl.c" 
 
 
