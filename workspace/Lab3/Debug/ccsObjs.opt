@@ -1,7 +1,7 @@
 "./main.obj"
 "./peripherals.obj"
 "./tempControl.obj"
-"./timerResorces.obj"
+"./timerResources.obj"
 "./LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.obj"
 "./LcdDriver/Sharp96x96.obj"
 "./fonts/fontfixed6x8.obj"

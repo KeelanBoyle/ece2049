@@ -1,4 +1,9 @@
+#ifndef TIMER_RESOURCES_H
+#define TIMER_RESOURCES_H
+
 #include <inttypes.h>
 #include <msp430.h>
-uint32_t seconds=0;
+
 void timerConfig();
+
+#endif
