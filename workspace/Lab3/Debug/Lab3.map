@@ -1,7 +1,7 @@
 ******************************************************************************
-                  MSP430 Linker Unix v21.6.0                   
+                  MSP430 Linker PC v21.6.0                     
 ******************************************************************************
->> Linked Tue Oct  4 22:54:22 2022
+>> Linked Tue Oct  4 23:36:36 2022
 
 OUTPUT FILE NAME:   <Lab3.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 00004400
@@ -208,18 +208,18 @@ MODULE SUMMARY
 
        Module                       code   ro data   rw data
        ------                       ----   -------   -------
-    ./
+    .\
        peripherals.obj              10     2         0      
        main.obj                     10     0         0      
     +--+----------------------------+------+---------+---------+
        Total:                       20     2         0      
                                                             
-    ./LcdDriver/
+    .\LcdDriver\
        Sharp96x96.obj               72     0         2      
     +--+----------------------------+------+---------+---------+
        Total:                       72     0         2      
                                                             
-    /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/lib/rts430x_lc_rd_eabi.lib
+    C:\ti\ccs1200\ccs\tools\compiler\ti-cgt-msp430_21.6.0.LTS\lib\rts430x_lc_rd_eabi.lib
        copy_decompress_lzss.c.obj   118    0         0      
        autoinit.c.obj               84     0         0      
        boot.c.obj                   28     2         0      

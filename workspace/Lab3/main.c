@@ -53,8 +53,10 @@ int main(void)
   // See schematic at end or MSP-EXP430F5529 board users guide
 
 }
+
+
 void scrollWheel(){
-    P8SEL &= ~BIT0;
+      P8SEL &= ~BIT0;
       P8DIR |= BIT0;
       P8OUT |= BIT0;
       REFCTL0 &= ~REFMSTR;                      // Reset REFMSTR to hand over control of
@@ -102,12 +104,13 @@ int* displayTime(long unsigned int inTime){
 }
 
 double displayTemp(float inAvgTempC){
-    double avgTempF=inAvgTempC*1.8+32;
+    float avgTempF=inAvgTempC*1.8+32;
     Graphics_clearDisplay(&g_sContext);
     Graphics_drawString(&g_sContext, "Temp (C) =>", AUTO_STRING_LENGTH, 16, 8, TRANSPARENT_TEXT);
-//    Graphics_drawString(&g_sContext, inAvgTempC, AUTO_STRING_LENGTH, 20, 8, TRANSPARENT_TEXT);
+   // Graphics_drawString(&g_sContext, inAvgTempC, AUTO_STRING_LENGTH, 20, 8, TRANSPARENT_TEXT);
     Graphics_drawString(&g_sContext, "Temp (F) =>", AUTO_STRING_LENGTH, 16, 10, TRANSPARENT_TEXT);
-//    Graphics_drawString(&g_sContext, avgTempF, AUTO_STRING_LENGTH, 20, 10, TRANSPARENT_TEXT);
+   // Graphics_drawString(&g_sContext, avgTempF, AUTO_STRING_LENGTH, 20, 10, TRANSPARENT_TEXT);
 
     return avgTempF;
 }
+
