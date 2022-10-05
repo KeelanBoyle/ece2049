@@ -5,7 +5,7 @@ unsigned int in_value;
 
 #include "stdio.h"
 #include "string.h"
-
+#include "tempControl.h"
 #define GET_TMR (TA1R)
 #define CLEAR_TMR (TA1CTL |= TACLR);
 #define DELAY(x) CLEAR_TMR; while(GET_TMR < (0x20 * x)) {} // Wait in 1024th second increments.
@@ -251,6 +251,7 @@ void configSelectButtons() {
 void drawAll(uint32_t timeInSeconds) {
     Graphics_clearDisplay(&g_sContext);
     dispTime(timeInSeconds, selected);
+    temp();
     Graphics_flushBuffer(&g_sContext);
 }
 
@@ -279,5 +280,6 @@ __interrupt void timer_A2_ISR(void)
 {
     drawAll(seconds);
     seconds++;
+
 }
 

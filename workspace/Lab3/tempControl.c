@@ -53,46 +53,54 @@ double averageTempC(){
         }
         int averageADC=totalTemp/elements;
         //convert from adc to temprature
-        double averageTemp= averageADC-CAL_ADC_T30*((85-30)/(CAL_ADC_T85-CAL_ADC_T30))+30;
+        double averageTemp= averageADC-3.3*((85-30)/(3.3))+30;//???
         return averageTemp;
 }
 
-int* floatToInt(float num){
-    int intNum=num;
-    double tempFDec=(num-intNum)*10.0;
-    int tenthF=tempFDec;
+int* floatToInt(float num){// looks good
+    float ha=num;
+    ha=ha-0;
+    int intNum=(int)num;
+    float tempVar=(float)num-(float)intNum;
+    float tempFDec=tempVar*0xA;
+    int tenthF=(int)tempFDec;
     int hehe[2]={intNum, tenthF};
     return hehe;
 }
 
-void arrToPrint(int* arr, bool celcius ){
-    int yPos=10;
-    if(celcius ){
-        yPos=20;
+void arrToPrint(int* arr, bool fahrenheit  ){
+    int yPos=40;
+    if(fahrenheit  ){
+        yPos=70;
     }
     char buffer[32];
 
     snprintf(&buffer, 31,"%d.%d",arr[0],arr[1]);
 
-    Graphics_drawString(&g_sContext, buffer, AUTO_STRING_LENGTH, 20, yPos, TRANSPARENT_TEXT);
+    Graphics_drawString(&g_sContext, buffer, AUTO_STRING_LENGTH, 40, yPos, TRANSPARENT_TEXT);
+
 }
 
 void displayTemp(float inAvgTempC){
-    int intC[2]=floatToInt(inAvgTempC);
-    arrToPrint(intC,true);
-    double avgTempF=inAvgTempC*1.8+32;
-    int intF[2]=floatToInt(avgTempF);
+
+    int *intC;
+    intC=floatToInt(inAvgTempC);
+
     arrToPrint(intC,false);
+    float avgTempF=inAvgTempC*1.8+32;
+    int *intF=floatToInt(avgTempF);
+    arrToPrint(intF,true);
 
 
 
-    Graphics_drawString(&g_sContext, "Temp (C) =>", AUTO_STRING_LENGTH, 16, 8, TRANSPARENT_TEXT);
+    Graphics_drawString(&g_sContext, "Temp (C) =>", AUTO_STRING_LENGTH, 10, 30, TRANSPARENT_TEXT);
 
 
-    Graphics_drawString(&g_sContext, "Temp (F) =>", AUTO_STRING_LENGTH, 16, 10, TRANSPARENT_TEXT);
+    Graphics_drawString(&g_sContext, "Temp (F) =>", AUTO_STRING_LENGTH, 10, 60, TRANSPARENT_TEXT);
 
     return avgTempF;
 }
 void temp(){
+
     displayTemp(  averageTempC());
 }
