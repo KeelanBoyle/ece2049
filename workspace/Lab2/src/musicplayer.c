@@ -5,10 +5,12 @@
  *      Author: arthur
  */
 
+#include "../../../../../embedded_Syst/HW2/Lab2/src/musicplayer.h"
+
 #include <msp430.h>
-#include <musicplayer.h>
-#include <peripherals.h>
-#include <gui.h>
+
+#include "../../../../../embedded_Syst/HW2/Lab2/peripherals.h"
+#include "../../../../../embedded_Syst/HW2/Lab2/src/gui.h"
 
 #define CLR_TIMER (TA2CTL |= TACLR)
 #define PAUSE_TIMER (TA2CTL &= ~MC_1)

@@ -14,7 +14,7 @@
  *
  */
 
-#include "peripherals.h"
+#include "../../../../embedded_Syst/HW2/Lab2/peripherals.h"
 
 
 // Globals

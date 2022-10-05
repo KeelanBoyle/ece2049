@@ -1,8 +1,9 @@
-#include "gui.h"
-#include "songs.h"
-#include "grlib.h"
-#include "peripherals.h"
+#include "../../../../../embedded_Syst/HW2/Lab2/src/gui.h"
+
 #include "msp430.h"
+#include "../../../../../embedded_Syst/HW2/Lab2/grlib/grlib.h"
+#include "../../../../../embedded_Syst/HW2/Lab2/peripherals.h"
+#include "../../../../../embedded_Syst/HW2/Lab2/songs/songs.h"
 
 uint8_t currentPage = 0;
 GUISTATE state = WELCOME;

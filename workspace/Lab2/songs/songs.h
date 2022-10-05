@@ -1,7 +1,7 @@
 #ifndef SONGS_H
 #define SONGS_H
 
-#include "musicplayer.h"
+#include "../../../../../embedded_Syst/HW2/Lab2/src/musicplayer.h"
 
 const static Note FurEliseNotes[] = {
     {.freq = 660, .duration = 16, .leds = 4},

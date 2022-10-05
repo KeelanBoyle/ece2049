@@ -8,8 +8,8 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include <musicplayer.h>
 #include <inttypes.h>
+#include "../../../../../embedded_Syst/HW2/Lab2/src/musicplayer.h"
 
 typedef enum GUISTATE {
     WELCOME,

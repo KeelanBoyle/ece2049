@@ -1,10 +1,11 @@
 #include <msp430.h> 
 #include <stdio.h>
 #include <inttypes.h>
-#include "peripherals.h"
-#include "musicplayer.h"
-#include "songs.h"
-#include "gui.h"
+
+#include "../../../../embedded_Syst/HW2/Lab2/peripherals.h"
+#include "../../../../embedded_Syst/HW2/Lab2/songs/songs.h"
+#include "../../../../embedded_Syst/HW2/Lab2/src/gui.h"
+#include "../../../../embedded_Syst/HW2/Lab2/src/musicplayer.h"
 
 uint8_t getButtonPressed(void);
 void initButtons(void);
