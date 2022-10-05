@@ -14,5 +14,8 @@ void timerConfig(){
 #pragma vector = TIMER2_A0_VECOTOR
 __interrupt void timer_A2_ISR(void)
 {
+    int help[3]=getADCValue();
+
     seconds++;
+
 }

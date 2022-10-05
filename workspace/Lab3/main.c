@@ -51,7 +51,7 @@ int main(void)
   // Configure P8.0 as digital IO output and set it to 1
   // This supplied 3.3 volts across scroll wheel potentiometer
   // See schematic at end or MSP-EXP430F5529 board users guide
-
+configDisplay();
 }
 
 
@@ -103,14 +103,5 @@ int* displayTime(long unsigned int inTime){
     return displayTime;
 }
 
-double displayTemp(float inAvgTempC){
-    float avgTempF=inAvgTempC*1.8+32;
-    Graphics_clearDisplay(&g_sContext);
-    Graphics_drawString(&g_sContext, "Temp (C) =>", AUTO_STRING_LENGTH, 16, 8, TRANSPARENT_TEXT);
-   // Graphics_drawString(&g_sContext, inAvgTempC, AUTO_STRING_LENGTH, 20, 8, TRANSPARENT_TEXT);
-    Graphics_drawString(&g_sContext, "Temp (F) =>", AUTO_STRING_LENGTH, 16, 10, TRANSPARENT_TEXT);
-   // Graphics_drawString(&g_sContext, avgTempF, AUTO_STRING_LENGTH, 20, 10, TRANSPARENT_TEXT);
 
-    return avgTempF;
-}
 
