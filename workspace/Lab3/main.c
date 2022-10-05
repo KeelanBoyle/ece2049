@@ -44,6 +44,7 @@
  * --/COPYRIGHT--*/
 #include <msp430.h>
 #include "peripherals.h"
+<<<<<<< HEAD
 unsigned int in_value;
 int main(void)
 {
@@ -52,8 +53,130 @@ int main(void)
   // This supplied 3.3 volts across scroll wheel potentiometer
   // See schematic at end or MSP-EXP430F5529 board users guide
 configDisplay();
+=======
+#include "stdio.h"
+
+#define GET_TMR (TA1R)
+#define CLEAR_TMR (TA1CTL |= TACLR);
+#define DELAY(x) CLEAR_TMR; while(GET_TMR < (0x20 * x)) {} // Wait in 1024th second increments.
+
+#define SEC_TO_MIN 60
+#define MIN_TO_HOUR 60
+#define HOUR_TO_DAY 24
+
+char* Months[] = {
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DEC"
+};
+
+uint32_t MonthToDay[] = {
+    31,
+    28,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31
+};
+
+typedef struct Time_t {
+    uint8_t sec;
+    uint8_t min;
+    uint8_t hour;
+    uint8_t day;
+    uint8_t month;
+} Time_t;
+
+uint32_t seconds = 2678400;
+unsigned int in_value;
+
+void secondsToTime(uint32_t seconds, Time_t* time) {
+
+    int i = 0;
+    for(i = 0; (i < 12) && (seconds > (MonthToDay[i] * SEC_TO_MIN * MIN_TO_HOUR * HOUR_TO_DAY)); i++) {
+        seconds -= MonthToDay[i] * SEC_TO_MIN * MIN_TO_HOUR * HOUR_TO_DAY;
+    }
+    time->month = i;
+
+    time->day = (uint8_t)(seconds / (SEC_TO_MIN * MIN_TO_HOUR * HOUR_TO_DAY)) + 1;
+    seconds %= (SEC_TO_MIN * MIN_TO_HOUR * HOUR_TO_DAY);
+
+    time->hour = (uint8_t)(seconds / (SEC_TO_MIN * MIN_TO_HOUR));
+    seconds %= (SEC_TO_MIN * MIN_TO_HOUR);
+
+    time->min = (uint8_t)(seconds / (SEC_TO_MIN));
+    seconds %= (SEC_TO_MIN);
+
+    time->sec = seconds;
+>>>>>>> f7a2dd8234dca24c90a540b35049414a3e00759f
 }
 
+void dispTime() {
+    Time_t time;
+    secondsToTime(seconds, &time);
+
+    char monthDayStr[16];
+    snprintf(&monthDayStr, 15, "%s %d", Months[time.month], time.day);
+    char hourMinSecStr[16];
+
+    if(time.hour < 10) { // printf support in minimal mode, so no modifiers allowed - have to do the padding manually
+        snprintf(&hourMinSecStr, 4, "0%d:", time.hour);
+    } else {
+        snprintf(&hourMinSecStr, 4, "%d:", time.hour);
+    }
+
+    if(time.min < 10) { // printf support in minimal mode, so no modifiers allowed - have to do the padding manually
+        snprintf(&hourMinSecStr[3], 4, "0%d:", time.min);
+    } else {
+        snprintf(&hourMinSecStr[3], 4, "%d:", time.min);
+    }
+
+    if(time.sec < 10) { // printf support in minimal mode, so no modifiers allowed - have to do the padding manually
+        snprintf(&hourMinSecStr[6], 4, "0%d", time.sec);
+    } else {
+        snprintf(&hourMinSecStr[6], 4, "%d", time.sec);
+    }
+
+    Graphics_clearDisplay(&g_sContext);
+    Graphics_drawString(&g_sContext, monthDayStr, AUTO_STRING_LENGTH, 32, 8, TRANSPARENT_TEXT);
+    Graphics_drawString(&g_sContext, hourMinSecStr, AUTO_STRING_LENGTH, 22, 20, TRANSPARENT_TEXT);
+    Graphics_flushBuffer(&g_sContext);
+}
+
+
+int main(void)
+{
+      WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
+      // Configure P8.0 as digital IO output and set it to 1
+      // This supplied 3.3 volts across scroll wheel potentiometer
+      // See schematic at end or MSP-EXP430F5529 board users guide
+
+      configDisplay(); // Display
+
+      TA1CTL  = CNTL_0 | TASSEL_1 | MC_2;
+      CLEAR_TMR;
+
+      while(1) {
+          dispTime();
+          seconds++;
+          DELAY(10);
+      }
+}
 
 void scrollWheel(){
       P8SEL &= ~BIT0;
@@ -84,6 +207,7 @@ void scrollWheel(){
       }
 }
 
+<<<<<<< HEAD
 int* displayTime(long unsigned int inTime){
     double ticToSec=1;
     int sec2Min=60;
@@ -103,5 +227,14 @@ int* displayTime(long unsigned int inTime){
     return displayTime;
 }
 
+=======
+double displayTemp(float inAvgTempC){
+    float avgTempF=inAvgTempC*1.8+32;
+    Graphics_clearDisplay(&g_sContext);
+    Graphics_drawString(&g_sContext, "Temp (C) =>", AUTO_STRING_LENGTH, 16, 8, TRANSPARENT_TEXT);
+   // Graphics_drawString(&g_sContext, inAvgTempC, AUTO_STRING_LENGTH, 20, 8, TRANSPARENT_TEXT);
+    Graphics_drawString(&g_sContext, "Temp (F) =>", AUTO_STRING_LENGTH, 16, 10, TRANSPARENT_TEXT);
+   // Graphics_drawString(&g_sContext, avgTempF, AUTO_STRING_LENGTH, 20, 10, TRANSPARENT_TEXT);
+>>>>>>> f7a2dd8234dca24c90a540b35049414a3e00759f
 
 
