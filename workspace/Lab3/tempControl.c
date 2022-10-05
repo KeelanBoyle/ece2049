@@ -1,6 +1,8 @@
-
 #include "tempControl.h"
-
+#include "msp430.h"
+#include "stdbool.h"
+#include "grlib.h"
+#include "peripherals.h"
 
 void adcSetup(){
     REFCTL0 &= ~REFMSTR;
@@ -65,9 +67,9 @@ int* floatToInt(float num){
 
 void arrToPrint(int* arr, bool celcius ){
     int yPos=10;
-if(celcius ){
-    yPos=20;
-}
+    if(celcius ){
+        yPos=20;
+    }
     char buffer[32];
 
     snprintf(&buffer, 31,"%d.%d",arr[0],arr[1]);

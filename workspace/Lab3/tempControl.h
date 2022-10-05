@@ -1,5 +1,6 @@
 #ifndef TEMP_CONTROL_H
 #define TEMP_CONTROL_H
+
 #include<msp430.h>
 #include "peripherals.h"
 #include "stdio.h"
@@ -11,6 +12,8 @@ void displayTemp(float inAvgTempC);
 double averageTempC();
 int tempReading[31];
 uint32_t tempCount;
+
+void adcSetup();
 
 
 #endif
