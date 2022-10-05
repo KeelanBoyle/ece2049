@@ -1,7 +1,11 @@
 ******************************************************************************
-                  MSP430 Linker Unix v21.6.0                   
+                  MSP430 Linker PC v21.6.0                     
 ******************************************************************************
+<<<<<<< HEAD
 >> Linked Wed Oct  5 00:26:20 2022
+=======
+>> Linked Tue Oct  4 23:36:36 2022
+>>>>>>> 89f0c2a272c4f4df754ce4d92baf2ad2cd7a024e
 
 OUTPUT FILE NAME:   <Lab3.out>
 ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 00004400
@@ -267,6 +271,7 @@ SYSNMI     0    0000fffc    00000002
 
 MODULE SUMMARY
 
+<<<<<<< HEAD
        Module                                code   ro data   rw data
        ------                                ----   -------   -------
     ./
@@ -344,6 +349,59 @@ MODULE SUMMARY
        Linker Generated:                     0      102       0      
     +--+-------------------------------------+------+---------+---------+
        Grand Total:                          6328   1302      1442   
+=======
+       Module                       code   ro data   rw data
+       ------                       ----   -------   -------
+    .\
+       peripherals.obj              10     2         0      
+       main.obj                     10     0         0      
+    +--+----------------------------+------+---------+---------+
+       Total:                       20     2         0      
+                                                            
+    .\LcdDriver\
+       Sharp96x96.obj               72     0         2      
+    +--+----------------------------+------+---------+---------+
+       Total:                       72     0         2      
+                                                            
+    C:\ti\ccs1200\ccs\tools\compiler\ti-cgt-msp430_21.6.0.LTS\lib\rts430x_lc_rd_eabi.lib
+       copy_decompress_lzss.c.obj   118    0         0      
+       autoinit.c.obj               84     0         0      
+       boot.c.obj                   28     2         0      
+       memcpy.c.obj                 20     0         0      
+       copy_decompress_none.c.obj   18     0         0      
+       isr_trap.asm.obj             8      0         0      
+       exit.c.obj                   6      0         0      
+       pre_init.c.obj               4      0         0      
+       int41.asm.obj                0      2         0      
+       int42.asm.obj                0      2         0      
+       int43.asm.obj                0      2         0      
+       int44.asm.obj                0      2         0      
+       int45.asm.obj                0      2         0      
+       int46.asm.obj                0      2         0      
+       int47.asm.obj                0      2         0      
+       int48.asm.obj                0      2         0      
+       int50.asm.obj                0      2         0      
+       int51.asm.obj                0      2         0      
+       int52.asm.obj                0      2         0      
+       int53.asm.obj                0      2         0      
+       int54.asm.obj                0      2         0      
+       int55.asm.obj                0      2         0      
+       int56.asm.obj                0      2         0      
+       int57.asm.obj                0      2         0      
+       int58.asm.obj                0      2         0      
+       int59.asm.obj                0      2         0      
+       int60.asm.obj                0      2         0      
+       int61.asm.obj                0      2         0      
+       int62.asm.obj                0      2         0      
+       startup.c.obj                2      0         0      
+    +--+----------------------------+------+---------+---------+
+       Total:                       288    44        0      
+                                                            
+       Stack:                       0      0         160    
+       Linker Generated:            0      22        0      
+    +--+----------------------------+------+---------+---------+
+       Grand Total:                 380    68        162    
+>>>>>>> 89f0c2a272c4f4df754ce4d92baf2ad2cd7a024e
 
 
 LINKER GENERATED COPY TABLES

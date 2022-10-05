@@ -2,7 +2,9 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
-CG_TOOL_ROOT := /home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS
+SHELL = cmd.exe
+
+CG_TOOL_ROOT := C:/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS
 
 GEN_OPTS__FLAG := 
 GEN_CMDS__FLAG := 
@@ -10,6 +12,8 @@ GEN_CMDS__FLAG :=
 ORDERED_OBJS += \
 "./main.obj" \
 "./peripherals.obj" \
+"./tempControl.obj" \
+"./timerResorces.obj" \
 "./LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.obj" \
 "./LcdDriver/Sharp96x96.obj" \
 "./fonts/fontfixed6x8.obj" \
@@ -21,8 +25,8 @@ $(GEN_CMDS__FLAG) \
 
 -include ../makefile.init
 
-RM := rm -rf
-RMDIR := rm -rf
+RM := DEL /F
+RMDIR := RMDIR /S/Q
 
 # All of the sources participating in the build are defined here
 -include sources.mk
@@ -150,22 +154,22 @@ all: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
 Lab3.out: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: MSP430 Linker'
-	"/home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/bin/cl430" -vmspx --data_model=restricted --use_hw_mpy=F5 --advice:power=all --define=__MSP430F5529__ -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU23 --silicon_errata=CPU40 -z -m"Lab3.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"/home/arthur/ti/ccs1200/ccs/ccs_base/msp430/include" -i"/home/arthur/ti/ccs1200/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"/home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/lib" -i"/home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="Lab3_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "Lab3.out" $(ORDERED_OBJS)
+	"C:/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/bin/cl430" -vmspx --data_model=restricted --use_hw_mpy=F5 --advice:power=all --define=__MSP430F5529__ -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU23 --silicon_errata=CPU40 -z -m"Lab3.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"C:/ti/ccs1200/ccs/ccs_base/msp430/include" -i"C:/ti/ccs1200/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"C:/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/lib" -i"C:/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="Lab3_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "Lab3.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
 Lab3.hex: $(EXE_OUTPUTS)
 	@echo 'Building secondary target: "$@"'
 	@echo 'Invoking: MSP430 Hex Utility'
-	"/home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/bin/hex430" --memwidth=8 --romwidth=8 --diag_wrap=off -o "Lab3.hex" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/bin/hex430" --memwidth=8 --romwidth=8 --diag_wrap=off -o "Lab3.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building secondary target: "$@"'
 	@echo ' '
 
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "peripherals.obj" "LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.obj" "LcdDriver/Sharp96x96.obj" "fonts/fontfixed6x8.obj" 
-	-$(RM) "main.d" "peripherals.d" "LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.d" "LcdDriver/Sharp96x96.d" "fonts/fontfixed6x8.d" 
+	-$(RM) "main.obj" "peripherals.obj" "tempControl.obj" "timerResorces.obj" "LcdDriver\HAL_MSP_EXP430FR5529_Sharp96x96.obj" "LcdDriver\Sharp96x96.obj" "fonts\fontfixed6x8.obj" 
+	-$(RM) "main.d" "peripherals.d" "tempControl.d" "timerResorces.d" "LcdDriver\HAL_MSP_EXP430FR5529_Sharp96x96.d" "LcdDriver\Sharp96x96.d" "fonts\fontfixed6x8.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
