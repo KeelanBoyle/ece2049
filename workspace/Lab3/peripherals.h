@@ -11,7 +11,7 @@
 
 #include <msp430.h>
 #include <stdint.h>
-#include "LSharp96x96.h"
+#include "Sharp96x96.h"
 
 #include "grlib.h"
 #include "HAL_MSP_EXP430FR5529_Sharp96x96.h"

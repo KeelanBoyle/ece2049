@@ -10,7 +10,11 @@ GEN_CMDS__FLAG :=
 ORDERED_OBJS += \
 "./main.obj" \
 "./peripherals.obj" \
+"./LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.obj" \
+"./LcdDriver/Sharp96x96.obj" \
+"./fonts/fontfixed6x8.obj" \
 "../lnk_msp430f5529.cmd" \
+"../lib/grlib.lib" \
 $(GEN_CMDS__FLAG) \
 -llibmath.a \
 -llibc.a \
@@ -23,7 +27,13 @@ RMDIR := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include subdir_vars.mk
+-include LcdDriver/subdir_vars.mk
+-include fonts/subdir_vars.mk
+-include lib/subdir_vars.mk
 -include subdir_rules.mk
+-include LcdDriver/subdir_rules.mk
+-include fonts/subdir_rules.mk
+-include lib/subdir_rules.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -133,11 +143,11 @@ BIN_OUTPUTS__QUOTED += \
 
 
 # All Target
-all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+all: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
 	@$(MAKE) --no-print-directory -Onone "Lab3.out"
 
 # Tool invocations
-Lab3.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+Lab3.out: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: MSP430 Linker'
 	"/home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/bin/cl430" -vmspx --data_model=restricted --use_hw_mpy=F5 --advice:power=all --define=__MSP430F5529__ -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU23 --silicon_errata=CPU40 -z -m"Lab3.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"/home/arthur/ti/ccs1200/ccs/ccs_base/msp430/include" -i"/home/arthur/ti/ccs1200/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"/home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/lib" -i"/home/arthur/ti/ccs1200/ccs/tools/compiler/ti-cgt-msp430_21.6.0.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="Lab3_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "Lab3.out" $(ORDERED_OBJS)
@@ -154,8 +164,8 @@ Lab3.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "peripherals.obj" 
-	-$(RM) "main.d" "peripherals.d" 
+	-$(RM) "main.obj" "peripherals.obj" "LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.obj" "LcdDriver/Sharp96x96.obj" "fonts/fontfixed6x8.obj" 
+	-$(RM) "main.d" "peripherals.d" "LcdDriver/HAL_MSP_EXP430FR5529_Sharp96x96.d" "LcdDriver/Sharp96x96.d" "fonts/fontfixed6x8.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
