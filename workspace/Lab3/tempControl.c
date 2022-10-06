@@ -11,7 +11,7 @@ void adcSetup(){
     P6SEL |= BIT6;
     ADC12MCTL7 = ADC12SREF_0 + ADC12INCH_6;  // this is for Full scale range
     ADC12MCTL8 = ADC12SREF_2 + ADC12INCH_13;
-    ADC12MCTL9 = ADC12SREF_1 + ADC12INCH_10 + ADC12EOS; // input channel 8, the referenced used is Ref_1, V(R+) = VREF+ = 1.5 V, and V(R-) = Vss. The full-scale range is 1.5 V
+    ADC12MCTL9 = ADC12SREF_1 + ADC12INCH_10 + ADC12EOS; // input channel 10, the referenced used is Ref_1, V(R+) = VREF+ = 1.5 V, and V(R-) = Vss. The full-scale range is 1.5 V
     ADC12CTL0 |= (ADC12SC|ADC12ENC);
 }
 
@@ -30,7 +30,7 @@ int* getADCValue(){
 
     }
     int adcData[3]={value1,value2,value3};
-    return adcData;
+    return 1000;
 }
 
 double averageTempC(){
@@ -51,15 +51,18 @@ double averageTempC(){
         for (i=0; i<31; i++){
             totalTemp+=tempReading[i];
         }
-        int averageADC=totalTemp/elements;
+        double averageADC=totalTemp/elements;
         //convert from adc to temprature
-        double averageTemp= averageADC-3.3*((85-30)/(3.3))+30;//???
-        return averageTemp;
+       // double averageTemp= (averageADC-3.3)*(16.6666)+30;//???
+        double VrefP=3.3;
+        double VrefN=0;
+        double bitCount=pow(2,10);
+        double averageTemp= averageADC*(VrefP-VrefN)/bitCount+VrefP;
+        return  averageTemp;
 }
 
 int* floatToInt(float num){// looks good
-    float ha=num;
-    ha=ha-0;
+
     int intNum=(int)num;
     float tempVar=(float)num-(float)intNum;
     float tempFDec=tempVar*0xA;

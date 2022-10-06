@@ -10,7 +10,7 @@ void adcSetup();
 int* getADCValue();
 void displayTemp(float inAvgTempC);
 double averageTempC();
-int tempReading[31];
+int tempReading[32];
 uint32_t tempCount;
 
 void adcSetup();
