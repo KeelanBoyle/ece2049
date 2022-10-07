@@ -4,35 +4,105 @@
 #include "grlib.h"
 #include "peripherals.h"
 
-void adcSetup(){
-    REFCTL0 &= ~REFMSTR;
-    ADC12CTL0 = ADC12SHT0_10 + ADC12SHT1_10 + ADC12REFON + ADC12ON + ADC12MSC;
-    ADC12CTL1 = ADC12CSTARTADD_7 + BIT8;
-    P6SEL |= BIT6;
-    ADC12MCTL7 = ADC12SREF_0 + ADC12INCH_10;  // this is for Full scale range
-    ADC12MCTL8 = ADC12SREF_2 + ADC12INCH_13;
-    ADC12MCTL9 = ADC12SREF_1 + ADC12INCH_10 + ADC12EOS; // input channel 10, the referenced used is Ref_1, V(R+) = VREF+ = 1.5 V, and V(R-) = Vss. The full-scale range is 1.5 V
-    ADC12CTL0 |= (ADC12SC|ADC12ENC);
-}
+#define CALADC12_15V_30C  *((unsigned int *)0x1A1A)
+// Temperature Sensor Calibration = Reading at 85 degrees C is stored at addr 1A1Ch                                            //See device datasheet for TLV table memory mapping
+#define CALADC12_15V_85C  *((unsigned int *)0x1A1C)
+
+unsigned int in_temp;
+
+void adcSetup(void)
+{
+  volatile float temperatureDegC;
+  volatile float temperatureDegF;
+  volatile float degC_per_bit;
+  volatile unsigned int bits30, bits85;
+
+  WDTCTL = WDTPW + WDTHOLD;      // Stop WDT
+
+  REFCTL0 &= ~REFMSTR;    // Reset REFMSTR to hand over control of
+                          // internal reference voltages to
+              // ADC12_A control registers
+
+  ADC12CTL0 = ADC12SHT0_9 | ADC12REFON | ADC12ON;     // Internal ref = 1.5V
+
+  ADC12CTL1 = ADC12SHP;                     // Enable sample timer
+
+  // Using ADC12MEM0 to store reading
+  ADC12MCTL0 = ADC12SREF_1 + ADC12INCH_10;  // ADC i/p ch A10 = temp sense
+                                        // ACD12SREF_1 = internal ref = 1.5v
+
+  __delay_cycles(100);                    // delay to allow Ref to settle
+  ADC12CTL0 |= ADC12ENC;              // Enable conversion
+
+  // Use calibration data stored in info memory
+  //bits30 = CALADC12_15V_30C;
+  //bits85 = CALADC12_15V_85C;
+  //degC_per_bit = ((float)(85.0 - 30.0))/((float)(bits85-bits30));
 
 
-int* getADCValue(){
-    int value1=0;
-    int value2=0;
-    int value3=0;
 
+    ADC12CTL0 &= ~ADC12SC;  // clear the start bit
+    ADC12CTL0 |= ADC12SC;       // Sampling and conversion start
+                        // Single conversion (single channel)
+/*
+    // Poll busy bit waiting for conversion to complete
+    while (ADC12CTL1 & ADC12BUSY)
+        __no_operation();
+    in_temp = ADC12MEM0;      // Read in results if conversion
+
+    // Temperature in Celsius. See the Device Descriptor Table section in the
+    // System Resets, Interrupts, and Operating Modes, System Control Module
+    // chapter in the device user's guide for background information on the
+    // formula.
+    temperatureDegC = (float)((long)in_temp - CALADC12_15V_30C) * degC_per_bit +30.0;
+
+    // Temperature in Fahrenheit
+    temperatureDegF =
+
+    __no_operation();    // SET BREAKPOINT HERE
+    */
+  }
+
+float getData(){
+    volatile float temperatureDegC;
+    volatile float temperatureDegF;
+    volatile float degC_per_bit;
+    volatile unsigned int bits30, bits85;
+    bits30 = CALADC12_15V_30C;
+    bits85 = CALADC12_15V_85C;
+    degC_per_bit = ((float)(85.0 - 30.0))/((float)(bits85-bits30));
     while (ADC12CTL1 & ADC12BUSY){
-     __no_operation();
-
-    value1 = ADC12MEM9 & 0x0FFF; // get low 12 bits output memory register 7
-    value2=ADC12MEM9;
-
+        __no_operation();
     }
 
-    return value1;
+        in_temp = ADC12MEM0;      // Read in results if conversion
+
+        // Temperature in Celsius. See the Device Descriptor Table section in the
+        // System Resets, Interrupts, and Operating Modes, System Control Module
+        // chapter in the device user's guide for background information on the
+        // formula.
+        temperatureDegC = (float)((long)in_temp - CALADC12_15V_30C) * degC_per_bit +30.0;
+
+return temperatureDegC;
+
 }
 
-double averageTempC(){
+//int* getADCValue(){
+//    int value1=0;
+//    int value2=0;
+//
+//    while (ADC12CTL1 & ADC12BUSY){
+//     __no_operation();
+//
+//    value1 = ADC12MEM9 & 0x0FFF; // get low 12 bits output memory register 7
+//    value2=ADC12MEM9;
+//
+//    }
+//
+//    return value1;
+//}
+
+float averageTempC(){
 
     tempCount++;
     int currentPos=tempCount%31;
@@ -44,19 +114,16 @@ double averageTempC(){
 
         elements=32.0;
 }
-    tempReading[currentPos]=getADCValue();
+    tempReading[currentPos]=getData();
     int i=0;
-    double totalTemp=0;
+    float totalTemp=0;
         for (i=0; i<31; i++){
             totalTemp+=tempReading[i];
         }
-        double averageADC=totalTemp/elements;
+        float averageTemp=totalTemp/(float)elements;
         //convert from adc to temprature
        // double averageTemp= (averageADC-3.3)*(16.6666)+30;//???
-        double VrefP=1.5;
-        double VrefN=0;
-        double bitCount=pow(2,10);
-        double averageTemp= averageADC*(VrefP-VrefN)/bitCount+VrefP;
+
         return  averageTemp;
 }
 

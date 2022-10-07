@@ -7,13 +7,14 @@
 #include <inttypes.h>
 
 void adcSetup();
-int* getADCValue();
+//int* getADCValue();
 void displayTemp(float inAvgTempC);
-double averageTempC();
+float averageTempC();
 int tempReading[32];
 uint32_t tempCount;
-
 void adcSetup();
+float getData();
+
 
 
 #endif

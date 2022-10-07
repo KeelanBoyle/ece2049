@@ -259,7 +259,7 @@ int main(void)
 {
       WDTCTL = WDTPW + WDTHOLD;
       _BIS_SR(GIE);
-
+      adcSetup();
       configScrollWheel();
       configDisplay();
       configSelectButtons();
