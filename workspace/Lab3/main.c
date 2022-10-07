@@ -165,7 +165,7 @@ void configScrollWheel() {
     ADC12CTL0 = ADC12SHT0_9 | ADC12ON;
     ADC12CTL1 = ADC12SHP;
 
-    // Use ADC12MEM0 register for conversion results
+    // Use ADC12ADC12MCTL10 register for conversion results
     ADC12MCTL0 = ADC12SREF_0 | ADC12INCH_0;   // ADC12INCH5 = Scroll wheel = A5
 
     __delay_cycles(100);                      // delay to allow Ref to settle
@@ -180,7 +180,7 @@ uint16_t pollScrollWheel(){
     while (ADC12CTL1 & ADC12BUSY)
         __no_operation();
 
-    scrollValue = ADC12MEM0;
+    scrollValue = ADC12MEM1;
 }
 
 void pollSelectButton() {
@@ -251,8 +251,9 @@ void configSelectButtons() {
 void drawAll(uint32_t timeInSeconds) {
     Graphics_clearDisplay(&g_sContext);
     dispTime(timeInSeconds, selected);
-    temp();
-    Graphics_flushBuffer(&g_sContext);
+       temp();
+
+        Graphics_flushBuffer(&g_sContext);
 }
 
 int main(void)

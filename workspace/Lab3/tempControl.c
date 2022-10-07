@@ -27,7 +27,7 @@ void adcSetup(void)
 
   ADC12CTL1 = ADC12SHP;                     // Enable sample timer
 
-  // Using ADC12MEM0 to store reading
+  // Using ADC12MEM2 to store reading
   ADC12MCTL0 = ADC12SREF_1 + ADC12INCH_10;  // ADC i/p ch A10 = temp sense
                                         // ACD12SREF_1 = internal ref = 1.5v
 
@@ -48,17 +48,14 @@ void adcSetup(void)
     // Poll busy bit waiting for conversion to complete
     while (ADC12CTL1 & ADC12BUSY)
         __no_operation();
-    in_temp = ADC12MEM0;      // Read in results if conversion
-
+    in_temp = ADC12MEM2;      // Read in results if conversion
     // Temperature in Celsius. See the Device Descriptor Table section in the
     // System Resets, Interrupts, and Operating Modes, System Control Module
     // chapter in the device user's guide for background information on the
     // formula.
     temperatureDegC = (float)((long)in_temp - CALADC12_15V_30C) * degC_per_bit +30.0;
-
     // Temperature in Fahrenheit
     temperatureDegF =
-
     __no_operation();    // SET BREAKPOINT HERE
     */
   }
@@ -75,13 +72,13 @@ float getData(){
         __no_operation();
     }
 
-        in_temp = ADC12MEM0;      // Read in results if conversion
+        in_temp = ADC12MEM2;      // Read in results if conversion
 
         // Temperature in Celsius. See the Device Descriptor Table section in the
         // System Resets, Interrupts, and Operating Modes, System Control Module
         // chapter in the device user's guide for background information on the
         // formula.
-        temperatureDegC = (float)((long)in_temp - CALADC12_15V_30C) * degC_per_bit +30.0;
+        temperatureDegC = (float)((long)in_temp - CALADC12_15V_30C) * degC_per_bit +30.0+330.0;
 
 return temperatureDegC;
 
@@ -167,7 +164,6 @@ void displayTemp(float inAvgTempC){
 
     Graphics_drawString(&g_sContext, "Temp (F) =>", AUTO_STRING_LENGTH, 10, 60, TRANSPARENT_TEXT);
 
-    return avgTempF;
 }
 void temp(){
 
