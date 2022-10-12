@@ -4,6 +4,8 @@
 
 #include "stdio.h"
 #include "string.h"
+#include "wavegenerator.h"
+
 /**
  * main.c
  */
@@ -26,15 +28,22 @@ void initButtons(){
     P2REN |=  (BIT2); // XXXX XXX1
     P2OUT |=  (BIT2); // XXXX XXX1
 }
+
 int main(void)
 {
-	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
-    //configScrollWheel();
-    configDisplay();
-    initButtons();
-   // configSelectButtons();
-	welcome();
-	 Graphics_flushBuffer(&g_sContext);
-	return 0;
+    WDTCTL = WDTPW + WDTHOLD;
+    _BIS_SR(GIE);
+
+    setupSPI_DAC();
+    DACInit();
+
+    configureTimer();
+
+    setWaveMode(SAWTOOTH);
+    setFreq(100);
+
+    while(1) {
+
+    }
 }
 

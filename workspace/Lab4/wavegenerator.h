@@ -21,5 +21,9 @@ typedef enum WaveSetting {
 bool setFreq(uint32_t hz);
 void setWaveMode(WaveSetting setting);
 void configureTimer(void);
+void DACInit(void);
+void setDCLevel(float level, float Vref);
+
+void DACSetValue(uint16_t val);
 
 #endif /* WAVEGENERATOR_H_ */
