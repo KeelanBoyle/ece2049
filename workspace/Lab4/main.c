@@ -1,7 +1,7 @@
 #include <msp430.h> 
 #include "welcome.h"
 #include "peripherals.h"
-
+#include "wavegenerator.h"
 #include "stdio.h"
 #include "string.h"
 
@@ -10,13 +10,14 @@
  */
 typedef enum STATE {
     WELCOME,
-    SQUARE,
-    DC,
-    SAWTOOTH,
-    TRIANGLE,
+    SQUARES,
+    DCS,
+    SAWTOOTHS,
+    TRIANGLES,
 } SIGNALSTATE;
 
 SIGNALSTATE state = WELCOME;
+WaveSetting waveModeS = DC;
 volatile uint16_t scrollValue;
 void initButtons(){
     // for button S1 & S4
@@ -79,22 +80,24 @@ int main(void)
     configScrollWheel();
     configDisplay();
     initButtons();
+    configureTimer();
+    DACInit();
     uint8_t buttonPressed=getButtonPressed();
 	while(1){
 	    buttonPressed=~(getButtonPressed()&0xF)-0xF0;
 	    pollScrollWheel();
         if(buttonPressed==8){
-            stateMachine(DC);
+            stateMachine(DCS);
         }
         else if(buttonPressed==4){
-            stateMachine(SQUARE);
+            stateMachine(SQUARES);
             pollScrollWheel();
         }
         else if(buttonPressed==2){
-            stateMachine(SAWTOOTH);
+            stateMachine(SAWTOOTHS);
         }
         else if(buttonPressed==1){
-            stateMachine(TRIANGLE);
+            stateMachine(TRIANGLES);
         }
         else{
             stateMachine(WELCOME);
@@ -109,24 +112,36 @@ void stateMachine(SIGNALSTATE newState){
         welcome();
         Graphics_flushBuffer(&g_sContext);
         break;
-    case DC:
+    case DCS:
         Graphics_clearDisplay(&g_sContext);
-        char numBuf[16];
-        snprintf(&numBuf, 15, "%d %s", scrollValue, "DC");
-        Graphics_drawString(&g_sContext, numBuf, AUTO_STRING_LENGTH, 10, 20, TRANSPARENT_TEXT);
+        setDCLevel(scrollValue,5);
+        waveModeS=DC;
+        Graphics_drawString(&g_sContext, "DC", AUTO_STRING_LENGTH, 10, 20, TRANSPARENT_TEXT);
         break;
 
-    case SQUARE:
+    case SQUARES:
         Graphics_clearDisplay(&g_sContext);
-        snprintf(&numBuf, 15, "%d %s", scrollValue, "square");
-        Graphics_drawString(&g_sContext, numBuf, AUTO_STRING_LENGTH, 10, 20, TRANSPARENT_TEXT);
+        if(waveModeS!=SQUARE){
+            waveModeS=SQUARE;
+        setWaveMode(waveModeS);
+        }
+        Graphics_drawString(&g_sContext, "Square", AUTO_STRING_LENGTH, 10, 20, TRANSPARENT_TEXT);
         break;
-    case SAWTOOTH:
+    case SAWTOOTHS:
+        if(waveModeS!=SAWTOOTH){
+            waveModeS=SAWTOOTH;
+            setWaveMode(SAWTOOTH);
+        }
        Graphics_clearDisplay(&g_sContext);
        Graphics_drawString(&g_sContext, "saw", AUTO_STRING_LENGTH, 30, 30, TRANSPARENT_TEXT);
        break;
-    case TRIANGLE:
+    case TRIANGLES:
         Graphics_clearDisplay(&g_sContext);
+        if(waveModeS!=TRIANGLE){
+            waveModeS=TRIANGLE;
+            setWaveMode(TRIANGLE);
+        }
+
         Graphics_drawString(&g_sContext, "trig", AUTO_STRING_LENGTH, 40, 40, TRANSPARENT_TEXT);
         break;
     default:
