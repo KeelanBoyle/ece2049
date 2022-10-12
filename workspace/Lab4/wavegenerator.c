@@ -14,7 +14,7 @@
 #define TMR_FREQ  (32768 * 32)
 #define TMR_CLR   (TA2CTL |= TACLR)
 
-#define RESOLUTION 32
+#define RESOLUTION 8
 #define DAC_MAX 4096
 
 #define STEP (DAC_MAX / RESOLUTION)
@@ -23,6 +23,7 @@ uint32_t freq = 0;
 WaveSetting waveMode = DC;
 uint16_t dcLevel = 0;
 uint16_t acLevel = 0;
+uint16_t squareOn = 0;
 uint8_t triangleStatus = 1;
 uint16_t triangleCounter = 0;
 
@@ -52,8 +53,8 @@ void setWaveMode(WaveSetting setting) {
     }
 }
 
-void setDCLevel(float level, float vRef) {
-    dcLevel = (uint16_t)((level / vRef) * 4096);
+void setDCLevel(float level) {
+    dcLevel = (uint16_t)(level * 4096);
 
     if(waveMode == DC) {
         DACSetValue(dcLevel & 0xFFF);
@@ -74,12 +75,17 @@ __interrupt void timer_A2_ISR(void)
     switch(waveMode) {
     case SQUARE:
         TMR_PAUSE;
-        TA2CCR0 = (uint16_t)(TMR_FREQ / freq);
+        TA2CCR0 = (uint16_t)(TMR_FREQ / 100);
         TMR_CLR;
         TMR_PLAY;
 
-        acLevel = ~acLevel;
-        DACSetValue(acLevel & 0xFFF);
+        squareOn = !squareOn;
+        if(squareOn) {
+            DACSetValue(dcLevel & 0xFFF);
+        }
+        else {
+            DACSetValue(0);
+        }
         return;
     case SAWTOOTH:
         TMR_PAUSE;
@@ -92,14 +98,14 @@ __interrupt void timer_A2_ISR(void)
         return;
     case TRIANGLE:
         TMR_PAUSE;
-        volatile uint16_t ccr0 = (TMR_FREQ / (freq * RESOLUTION));
+        volatile uint16_t ccr0 = (TMR_FREQ / (freq * RESOLUTION * 2));
         TA2CCR0 = ccr0;
         TMR_CLR;
         TMR_PLAY;
 
         if(triangleStatus == 1) {
             triangleCounter++;
-            acLevel = (acLevel + STEP) % DAC_MAX;
+            DACSetValue((triangleCounter * STEP) & 0xFFF);
             if(triangleCounter == RESOLUTION) {
                 triangleStatus = 0;
             }
@@ -107,13 +113,11 @@ __interrupt void timer_A2_ISR(void)
 
         if(triangleStatus == 0) {
             triangleCounter--;
-            acLevel = (acLevel - STEP);
+            DACSetValue((triangleCounter * STEP) & 0xFFF);
             if(triangleCounter == 0) {
                 triangleStatus = 1;
             }
         }
-
-        DACSetValue(acLevel & 0xFFF);
         return;
     default:
         return;

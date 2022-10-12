@@ -77,78 +77,91 @@ uint16_t pollScrollWheel(){
 int main(void)
 {
 	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
+    _BIS_SR(GIE);
     configScrollWheel();
     configDisplay();
+
     initButtons();
     configureTimer();
+
+    setupSPI_DAC();
+
     DACInit();
+
+    setFreq(100);
+
     uint8_t buttonPressed=getButtonPressed();
 	while(1){
 	    buttonPressed=~(getButtonPressed()&0xF)-0xF0;
 	    pollScrollWheel();
-        if(buttonPressed==8){
-            stateMachine(DCS);
+	    setDCLevel(scrollValue/4096.0);
+	    setFreq(100 + ((scrollValue/4096.0) * 9900));
+        if(buttonPressed == 0b0001){
+//            stateMachine(DCS);
+            setWaveMode(DC);
         }
-        else if(buttonPressed==4){
-            stateMachine(SQUARES);
-            pollScrollWheel();
+        else if(buttonPressed == 0b0010){
+//            stateMachine(SQUARES);
+            setWaveMode(SQUARE);
         }
-        else if(buttonPressed==2){
-            stateMachine(SAWTOOTHS);
+        else if(buttonPressed == 0b0100){
+            setWaveMode(SAWTOOTH);
+//            stateMachine(SAWTOOTHS);
         }
-        else if(buttonPressed==1){
-            stateMachine(TRIANGLES);
+        else if(buttonPressed == 0b1000){
+            setWaveMode(TRIANGLE);
+//            stateMachine(TRIANGLES);
         }
-        else{
-            stateMachine(WELCOME);
-            }
+//        else{
+//            stateMachine(WELCOME);
+//            }
 	}
 }
 
-void stateMachine(SIGNALSTATE newState){
-    state=newState;
-    switch(state){
-    case WELCOME:
-        welcome();
-        Graphics_flushBuffer(&g_sContext);
-        break;
-    case DCS:
-        Graphics_clearDisplay(&g_sContext);
-        setDCLevel(scrollValue,5);
-        waveModeS=DC;
-        Graphics_drawString(&g_sContext, "DC", AUTO_STRING_LENGTH, 10, 20, TRANSPARENT_TEXT);
-        break;
-
-    case SQUARES:
-        Graphics_clearDisplay(&g_sContext);
-        if(waveModeS!=SQUARE){
-            waveModeS=SQUARE;
-        setWaveMode(waveModeS);
-        }
-        Graphics_drawString(&g_sContext, "Square", AUTO_STRING_LENGTH, 10, 20, TRANSPARENT_TEXT);
-        break;
-    case SAWTOOTHS:
-        if(waveModeS!=SAWTOOTH){
-            waveModeS=SAWTOOTH;
-            setWaveMode(SAWTOOTH);
-        }
-       Graphics_clearDisplay(&g_sContext);
-       Graphics_drawString(&g_sContext, "saw", AUTO_STRING_LENGTH, 30, 30, TRANSPARENT_TEXT);
-       break;
-    case TRIANGLES:
-        Graphics_clearDisplay(&g_sContext);
-        if(waveModeS!=TRIANGLE){
-            waveModeS=TRIANGLE;
-            setWaveMode(TRIANGLE);
-        }
-
-        Graphics_drawString(&g_sContext, "trig", AUTO_STRING_LENGTH, 40, 40, TRANSPARENT_TEXT);
-        break;
-    default:
-        Graphics_clearDisplay(&g_sContext);
-    }
-    Graphics_flushBuffer(&g_sContext);
-
-
-}
+//void stateMachine(SIGNALSTATE newState){
+//    state=newState;
+//    switch(state){
+//    case WELCOME:
+//        welcome();
+//        Graphics_flushBuffer(&g_sContext);
+//        break;
+//    case DCS:
+//        Graphics_clearDisplay(&g_sContext);
+//        setDCLevel(scrollValue,5);
+//        waveModeS=DC;
+//        Graphics_drawString(&g_sContext, "DC", AUTO_STRING_LENGTH, 10, 20, TRANSPARENT_TEXT);
+//        break;
+//
+//    case SQUARES:
+//        Graphics_clearDisplay(&g_sContext);
+//        if(waveModeS!=SQUARE){
+//            waveModeS=SQUARE;
+//        setWaveMode(waveModeS);
+//        }
+//        Graphics_drawString(&g_sContext, "Square", AUTO_STRING_LENGTH, 10, 20, TRANSPARENT_TEXT);
+//        break;
+//    case SAWTOOTHS:
+//        if(waveModeS!=SAWTOOTH){
+//            waveModeS=SAWTOOTH;
+//            setWaveMode(SAWTOOTH);
+//        }
+//       Graphics_clearDisplay(&g_sContext);
+//       Graphics_drawString(&g_sContext, "saw", AUTO_STRING_LENGTH, 30, 30, TRANSPARENT_TEXT);
+//       break;
+//    case TRIANGLES:
+//        Graphics_clearDisplay(&g_sContext);
+//        if(waveModeS!=TRIANGLE){
+//            waveModeS=TRIANGLE;
+//            setWaveMode(TRIANGLE);
+//        }
+//
+//        Graphics_drawString(&g_sContext, "trig", AUTO_STRING_LENGTH, 40, 40, TRANSPARENT_TEXT);
+//        break;
+//    default:
+//        Graphics_clearDisplay(&g_sContext);
+//    }
+//    Graphics_flushBuffer(&g_sContext);
+//
+//
+//}
 
